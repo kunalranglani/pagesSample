@@ -1,0 +1,13 @@
+name: WebApp CI
+
+on:
+  push:
+    branches: 
+      - master
+
+jobs:
+  npm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install dependencies
+        run: npm install
