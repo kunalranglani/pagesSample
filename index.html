@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
 <body>
 <h1>Hello World</h1>
 <p>I'm hosted with GitHub Pages.</p>
   <p id="custom"></p> <br /> <br/>
+  <button id="maxScale">add max scale</button> <br /><br />
   <label>name</label> <input /><br /><br />
 <label>name2</label> <input /><br /><br />
 <label>name3</label> <input /><br /><br />
@@ -18,6 +19,9 @@
   <script>
     $(function() {
       $("#custom").text("its cool!");
+      $("#maxScale").click(()=>{
+        $("meta").attr("content", "width=device-width, initial-scale=1, maximum-scale=1");
+      });
     });
   </script>
 </body>
