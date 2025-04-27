@@ -34,6 +34,12 @@
  <div id="problemsContainer" class="container"></div>
 
 <script>
+function getRandomIntInclusive(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
 function generateQuestions() {
     const container = document.getElementById('questions');
     const operations = ['+', '-', '×'];
@@ -43,18 +49,14 @@ function generateQuestions() {
         let a, b;
 
         if (operation === '×') {
-            a = Math.floor(Math.random() * 90) + 10; // 2-digit number
-            b = Math.floor(Math.random() * 8) + 2;   // 1-digit number
+            a = getRandomIntInclusive(10, 99);
+            b = getRandomIntInclusive(2, 9);
         } else {
-            a = Math.floor(Math.random() * 900) + 100; // 3-digit number
-            b = Math.floor(Math.random() * 900) + 100; // 3-digit number
+            a =  getRandomIntInclusive(100, 999);
+            b = getRandomIntInclusive(100, 999);
 
-            // Sometimes make it 2-digit number for variety
             if (Math.random() < 0.4) {
-                a = Math.floor(Math.random() * 90) + 10;
-            }
-            if (Math.random() < 0.4) {
-                b = Math.floor(Math.random() * 90) + 10;
+                b = getRandomIntInclusive(11, 99);
             }
 
             // For subtraction and addition, ensure first number is bigger than second
