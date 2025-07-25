@@ -8,79 +8,89 @@
             text-align: center;
             margin: 20px;
         }
+
         h1 {
             text-decoration: underline;
         }
+
         .container {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
         }
+
         .problem {
             width: 100px;
             margin: 20px;
-			margin-bottom:60px;
-            font-size: 24px;
+            margin-bottom: 50px;
+            font-size: 20px;
             text-align: right;
         }
-        .problem div {
-            margin-bottom: 5px;
-        }
+
+            .problem div {
+                margin-bottom: 5px;
+            }
     </style>
 </head>
 <body>
 
 
- <div id="problemsContainer" class="container"></div>
+    <div id="problemsContainer" class="container"></div>
 
-<script>
-function getRandomIntInclusive(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1) + min);
-}
-
-function generateQuestions() {
-    const container = document.getElementById('questions');
-    const operations = ['+', '-', '×'];
-
-    for (let i = 0; i < 25; i++) {
-        const operation = operations[Math.floor(Math.random() * operations.length)];
-        let a, b;
-
-        if (operation === '×') {
-            a = getRandomIntInclusive(10, 99);
-            b = getRandomIntInclusive(2, 9);
-        } else {
-            a =  getRandomIntInclusive(100, 999);
-            b = getRandomIntInclusive(100, 999);
-
-            if (Math.random() < 0.4) {
-                b = getRandomIntInclusive(11, 99);
-            }
-
-            // For subtraction and addition, ensure first number is bigger than second
-            if (operation !== 'x' && b > a) {
-                [a, b] = [b, a];
-            }
+    <script>
+        function getRandomIntInclusive(min, max) {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min + 1) + min);
         }
 
-		
-		let container = document.getElementById("problemsContainer");
+        function generateQuestions() {
+            const container = document.getElementById('questions');
+            const operations = ['+', '-', '×', '/'];
+
+            for (let i = 0; i < 30; i++) {
+                const operation = operations[Math.floor(Math.random() * operations.length)];
+                let a, b;
+
+                if (operation === '×') {
+                    a = getRandomIntInclusive(10, 99);
+                    b = getRandomIntInclusive(2, 9);
+                }
+                else if (operation === '/') {
+                    b = getRandomIntInclusive(2, 10);
+                    const result = getRandomIntInclusive(1, 10);
+                    a = b * result; // ensures no remainder
+                }
+                else {
+                    a = getRandomIntInclusive(100, 999);
+                    b = getRandomIntInclusive(100, 999);
+
+                    if (Math.random() < 0.4) {
+                        b = getRandomIntInclusive(11, 99);
+                    }
+
+                    // For subtraction and addition, ensure first number is bigger than second
+                    if (operation !== 'x' && b > a) {
+                        [a, b] = [b, a];
+                    }
+                }
+
+
+                let container = document.getElementById("problemsContainer");
 
                 let problemDiv = document.createElement("div");
                 problemDiv.className = "problem";
                 problemDiv.innerHTML = `
-                    <div>&nbsp; ${a}</div>
-                    <div>${operation} ${b}</div>
-                    <div>______</div>
-                `;
+                        <div>&nbsp; ${a}</div>
+                        <div>${operation} ${b}</div>
+                        <div>______</div>
+                    `;
                 container.appendChild(problemDiv);
-    }
-}
+            }
+        }
 
-generateQuestions();
-</script>
+        generateQuestions();
+    </script>
 
 </body>
 </html>
