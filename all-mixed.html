@@ -52,7 +52,7 @@
 <body>
   <div class="container">
     <h1>Mixed Math Practice</h1>
-    <p class="subtitle">14 questions with addition, subtraction, multiplication, division, and missing length.</p>
+    <p class="subtitle">14 questions with addition, subtraction, multiplication, division, missing length, and area.</p>
     <button onclick="generate()">New Questions</button>
     <div class="grid" id="grid"></div>
   </div>
@@ -173,23 +173,82 @@
       </div>`;
     }
 
+    function squareAreaQuestion(index) {
+      let side = rand(2, 12);
+
+      return `
+      <div class="q">
+        <div class="q-title">${index}. Find the area of the square</div>
+        <div class="shape">
+          <svg viewBox="0 0 280 150" aria-label="Square with side length ${side}">
+            <rect x="90" y="30" width="90" height="90" fill="#dff3ff" stroke="#2b6cb0" stroke-width="2"/>
+            <text x="135" y="22" text-anchor="middle">${side}</text>
+            <text x="192" y="80" dominant-baseline="middle">${side}</text>
+          </svg>
+        </div>
+        <div class="answer">Answer: ______ square units</div>
+      </div>`;
+    }
+
+    function rectangleAreaQuestion(index) {
+      let width = rand(4, 14);
+      let height = rand(2, 9);
+
+      return `
+      <div class="q">
+        <div class="q-title">${index}. Find the area of the rectangle</div>
+        <div class="shape">
+          <svg viewBox="0 0 280 150" aria-label="Rectangle with width ${width} and height ${height}">
+            <rect x="55" y="42" width="160" height="60" fill="#dff3ff" stroke="#2b6cb0" stroke-width="2"/>
+            <text x="135" y="32" text-anchor="middle">${width}</text>
+            <text x="228" y="75" dominant-baseline="middle">${height}</text>
+          </svg>
+        </div>
+        <div class="answer">Answer: ______ square units</div>
+      </div>`;
+    }
+
+    function rightTriangleAreaQuestion(index) {
+      let base = rand(4, 16);
+      let height = rand(3, 12);
+
+      return `
+      <div class="q">
+        <div class="q-title">${index}. Find the area of the right triangle</div>
+        <div class="shape">
+          <svg viewBox="0 0 280 170" aria-label="Right triangle with base ${base} and height ${height}">
+            <polygon points="60,125 210,125 60,45" fill="#dff3ff" stroke="#2b6cb0" stroke-width="2"/>
+            <path d="M60 110 H75 V125" fill="none" stroke="#555" stroke-width="2"/>
+            <text x="135" y="145" text-anchor="middle">${base}</text>
+            <text x="42" y="88" text-anchor="middle">${height}</text>
+          </svg>
+        </div>
+        <div class="answer">Answer: ______ square units</div>
+      </div>`;
+    }
+
+    function areaQuestion(index) {
+      let areaBuilders = [squareAreaQuestion, rectangleAreaQuestion, rightTriangleAreaQuestion];
+      return areaBuilders[rand(0, areaBuilders.length - 1)](index);
+    }
+
     function generate() {
       let grid = document.getElementById('grid');
       let builders = [
         (index) => verticalQuestion(index, '+'),
         (index) => verticalQuestion(index, '+'),
-        (index) => verticalQuestion(index, '+'),
-        (index) => verticalQuestion(index, '-'),
         (index) => verticalQuestion(index, '-'),
         (index) => verticalQuestion(index, '-'),
         (index) => multiplyQuestion(index),
         (index) => multiplyQuestion(index),
-        (index) => multiplyQuestion(index),
-        (index) => divisionQuestion(index),
         (index) => divisionQuestion(index),
         (index) => divisionQuestion(index),
         (index) => splitRectQuestion(index),
-        (index) => lShapeQuestion(index)
+        (index) => lShapeQuestion(index),
+        (index) => areaQuestion(index),
+        (index) => areaQuestion(index),
+        (index) => areaQuestion(index),
+        (index) => areaQuestion(index)
       ];
 
       shuffle(builders);
