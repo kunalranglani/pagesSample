@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ayaan's Math Millionaire</title>
+  <style>
+    :root {
+      --night: #081427;
+      --midnight: #13294b;
+      --panel: rgba(8, 20, 39, 0.82);
+      --panel-strong: rgba(7, 16, 32, 0.94);
+      --gold: #ffd166;
+      --amber: #ff9f1c;
+      --cyan: #7bdff2;
+      --mint: #b8f2e6;
+      --cream: #fff6df;
+      --ink: #f7fbff;
+      --muted: #bed0e7;
+      --danger: #ff6b6b;
+      --success: #70e000;
+      --shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Avenir Next", "Trebuchet MS", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top, rgba(123, 223, 242, 0.2), transparent 30%),
+        radial-gradient(circle at 20% 80%, rgba(255, 209, 102, 0.18), transparent 20%),
+        linear-gradient(180deg, #091122 0%, #10264b 55%, #081427 100%);
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: auto;
+      border-radius: 999px;
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(20px);
+    }
+
+    body::before {
+      width: 220px;
+      height: 220px;
+      top: 72px;
+      right: -40px;
+      background: rgba(123, 223, 242, 0.18);
+    }
+
+    body::after {
+      width: 260px;
+      height: 260px;
+      left: -60px;
+      bottom: 36px;
+      background: rgba(255, 159, 28, 0.14);
+    }
+
+    .shell {
+      position: relative;
+      z-index: 1;
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 28px 18px 44px;
+    }
+
+    .ladder-card,
+    .game-card {
+      background: linear-gradient(180deg, rgba(20, 41, 75, 0.88), rgba(7, 16, 32, 0.94));
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .ladder-card {
+      padding: 18px;
+    }
+
+    .ladder-title {
+      margin: 0 0 12px;
+      font-size: 1.1rem;
+      color: var(--cream);
+    }
+
+    .ladder {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 8px;
+    }
+
+    .ladder li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      border-radius: 16px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid transparent;
+      transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+    }
+
+    .ladder li.active {
+      color: #05101f;
+      background: linear-gradient(135deg, var(--gold), #ffe7aa);
+      border-color: rgba(255, 255, 255, 0.45);
+      transform: translateX(-6px);
+      font-weight: 800;
+    }
+
+    .ladder li.safe {
+      border-color: rgba(123, 223, 242, 0.4);
+    }
+
+    .ladder li.cleared {
+      color: var(--mint);
+      background: rgba(112, 224, 0, 0.12);
+    }
+
+    .level {
+      font-weight: 800;
+    }
+
+    .game-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 310px;
+      gap: 18px;
+      padding: 18px;
+    }
+
+    .stage {
+      padding: 12px;
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(8, 20, 39, 0.66), rgba(7, 16, 32, 0.88));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .stage-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(123, 223, 242, 0.1);
+      color: var(--cyan);
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+
+    .question-box {
+      position: relative;
+      padding: 22px;
+      border-radius: 24px;
+      background: radial-gradient(circle at top, rgba(255, 255, 255, 0.05), transparent 60%), var(--panel);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      min-height: 360px;
+      overflow: hidden;
+    }
+
+    .category {
+      margin: 0 0 10px;
+      color: var(--gold);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.82rem;
+    }
+
+    .question-text {
+      margin: 0;
+      font-size: clamp(1.5rem, 3vw, 2.4rem);
+      line-height: 1.18;
+    }
+
+    .question-visual {
+      margin-top: 18px;
+      min-height: 190px;
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .question-visual svg {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .celebration-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .celebration-badge {
+      position: absolute;
+      left: 50%;
+      top: 34%;
+      transform: translate(-50%, -50%) scale(0.75);
+      padding: 14px 22px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(255, 209, 102, 0.96), rgba(255, 234, 175, 0.98));
+      color: #05101f;
+      font-size: 1.05rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      box-shadow: 0 16px 30px rgba(0, 0, 0, 0.28);
+      animation: celebration-badge 820ms ease-out forwards;
+    }
+
+    .confetti-piece {
+      position: absolute;
+      top: 46%;
+      left: 50%;
+      width: 12px;
+      height: 20px;
+      border-radius: 4px;
+      opacity: 0;
+      transform: translate(-50%, -50%) rotate(0deg);
+      animation: confetti-burst 900ms cubic-bezier(0.15, 0.8, 0.25, 1) forwards;
+    }
+
+    @keyframes celebration-badge {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.75);
+      }
+
+      20% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.08);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -82%) scale(1);
+      }
+    }
+
+    @keyframes confetti-burst {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) rotate(0deg);
+      }
+
+      15% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+        transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) rotate(var(--rotation));
+      }
+    }
+
+    .big-math {
+      font-family: "Courier New", monospace;
+      font-size: clamp(2.2rem, 6vw, 4rem);
+      font-weight: 800;
+      color: var(--cream);
+      text-align: center;
+      letter-spacing: 0.04em;
+    }
+
+    .answers {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .answer {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(19, 41, 75, 0.95), rgba(8, 20, 39, 0.95));
+      color: var(--ink);
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+      transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+    }
+
+    .answer:hover,
+    .answer:focus-visible {
+      transform: translateY(-2px);
+      border-color: rgba(255, 209, 102, 0.85);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.25);
+      outline: none;
+    }
+
+    .answer:disabled {
+      cursor: default;
+      opacity: 1;
+    }
+
+    .answer.correct {
+      background: linear-gradient(180deg, rgba(112, 224, 0, 0.3), rgba(30, 96, 25, 0.85));
+      border-color: rgba(184, 242, 230, 0.85);
+    }
+
+    .answer.wrong {
+      background: linear-gradient(180deg, rgba(255, 107, 107, 0.28), rgba(106, 21, 21, 0.85));
+      border-color: rgba(255, 107, 107, 0.86);
+    }
+
+    .answer-letter {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: inline-grid;
+      place-items: center;
+      background: rgba(255, 209, 102, 0.14);
+      color: var(--gold);
+      font-weight: 900;
+      flex: 0 0 auto;
+    }
+
+    .answer-text {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .status-panel {
+      display: grid;
+      gap: 14px;
+    }
+
+    .status-card {
+      padding: 18px;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.04));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .status-card h2,
+    .status-card h3 {
+      margin: 0 0 10px;
+    }
+
+    .status-copy {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .message {
+      min-height: 92px;
+      margin-top: 14px;
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--cream);
+      line-height: 1.55;
+    }
+
+    .message.good {
+      border-color: rgba(112, 224, 0, 0.45);
+    }
+
+    .message.bad {
+      border-color: rgba(255, 107, 107, 0.45);
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .button {
+      padding: 12px 16px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--gold), #ffeaaf);
+      color: #05101f;
+      font: inherit;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .button.secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--ink);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .mini-list {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .screen-reader {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 980px) {
+      .game-card {
+        grid-template-columns: 1fr;
+      }
+
+      .status-panel {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 720px) {
+      .shell {
+        padding: 18px 12px 28px;
+      }
+
+      .ladder-card,
+      .game-card {
+        border-radius: 22px;
+      }
+
+      .answers,
+      .status-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .question-box {
+        padding: 18px;
+        min-height: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="game-card">
+      <div class="stage">
+        <div class="stage-top">
+          <div class="pill" id="roundBadge">Question 1 of 15</div>
+          <div class="pill" id="earningsBadge">Current winnings: $0</div>
+        </div>
+
+        <div class="question-box">
+          <div class="celebration-layer" id="celebrationLayer" aria-hidden="true"></div>
+          <p class="category" id="categoryLabel">Warm Up</p>
+          <p class="question-text" id="questionText">Press start to load the first question for Ayaan.</p>
+          <div class="question-visual" id="questionVisual" aria-live="polite"></div>
+          <div class="answers" id="answers"></div>
+          <p class="screen-reader" id="announcer" aria-live="assertive"></p>
+        </div>
+      </div>
+
+      <aside class="status-panel">
+        <div class="status-card">
+          <h2 id="statusTitle">Ready To Play</h2>
+          <p class="status-copy" id="statusCopy">Ayaan starts at the bottom of the ladder. Each correct answer moves him one step closer to the million.</p>
+          <div class="controls">
+            <button class="button" id="startButton" type="button">Start Game</button>
+            <button class="button secondary" id="restartButton" type="button">New Game</button>
+          </div>
+        </div>
+
+        <div class="ladder-card" aria-labelledby="ladderTitle">
+          <h2 class="ladder-title" id="ladderTitle">Prize Ladder</h2>
+          <ol class="ladder" id="ladder"></ol>
+        </div>
+
+        <div class="status-card">
+          <h3>Game Notes</h3>
+          <ul class="mini-list">
+            <li>Every round has exactly four answer choices.</li>
+            <li>Question types are pulled from the existing worksheet pages.</li>
+            <li>Wrong answers drop Ayaan to the last safe level.</li>
+          </ul>
+        </div>
+
+        <div class="message" id="messageBox">Choose Start Game to begin.</div>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const prizes = [
+      100, 200, 300, 500, 1000,
+      2000, 4000, 8000, 16000, 32000,
+      64000, 125000, 250000, 500000, 1000000
+    ];
+    const safeLevels = [5, 10];
+    const answerLetters = ["A", "B", "C", "D"];
+
+    let game = null;
+
+    function rand(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function shuffle(items) {
+      const copy = items.slice();
+
+      for (let index = copy.length - 1; index > 0; index -= 1) {
+        const swapIndex = rand(0, index);
+        [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
+      }
+
+      return copy;
+    }
+
+    function formatMoney(value) {
+      return "$" + value.toLocaleString("en-US");
+    }
+
+    function uniqueChoices(correct, makeWrongChoice) {
+      const values = new Set([correct]);
+
+      while (values.size < 4) {
+        values.add(makeWrongChoice());
+      }
+
+      return shuffle(Array.from(values));
+    }
+
+    function mathMarkup(text) {
+      return '<div class="big-math">' + text + '</div>';
+    }
+
+    function additionQuestion() {
+      const first = rand(100, 999);
+      const second = rand(50, 499);
+      const correct = first + second;
+
+      return {
+        category: "Addition",
+        prompt: "What is the sum?",
+        visual: mathMarkup(first + " + " + second),
+        correctAnswer: correct,
+        choices: uniqueChoices(correct, function () {
+          return correct + rand(-90, 90);
+        })
+      };
+    }
+
+    function subtractionQuestion() {
+      const first = rand(250, 999);
+      const second = rand(30, first - 10);
+      const correct = first - second;
+
+      return {
+        category: "Subtraction",
+        prompt: "What is the difference?",
+        visual: mathMarkup(first + " - " + second),
+        correctAnswer: correct,
+        choices: uniqueChoices(correct, function () {
+          return Math.max(1, correct + rand(-80, 80));
+        })
+      };
+    }
+
+    function multiplicationQuestion() {
+      const first = rand(10, 99);
+      const second = rand(2, 9);
+      const correct = first * second;
+
+      return {
+        category: "Multiplication",
+        prompt: "What is the product?",
+        visual: mathMarkup(first + " × " + second),
+        correctAnswer: correct,
+        choices: uniqueChoices(correct, function () {
+          return Math.max(1, correct + rand(-24, 24));
+        })
+      };
+    }
+
+    function divisionQuestion() {
+      const divisor = rand(2, 10);
+      const quotient = rand(2, 12);
+      const dividend = divisor * quotient;
+
+      return {
+        category: "Division",
+        prompt: "What is the quotient?",
+        visual: mathMarkup(dividend + " ÷ " + divisor),
+        correctAnswer: quotient,
+        choices: uniqueChoices(quotient, function () {
+          return Math.max(1, quotient + rand(-5, 5));
+        })
+      };
+    }
+
+    function missingRectangleQuestion() {
+      const total = rand(8, 15);
+      const part = rand(2, total - 2);
+      const missing = total - part;
+      const dividerX = 40 + (part / total) * 260;
+
+      return {
+        category: "Missing Length",
+        prompt: "What number should replace the question mark?",
+        visual: `
+          <svg viewBox="0 0 360 170" aria-label="Rectangle split into two parts with total length ${total}">
+            <rect x="40" y="58" width="260" height="48" rx="4" fill="#dff3ff" stroke="#7bdff2" stroke-width="3"></rect>
+            <line x1="${dividerX}" y1="58" x2="${dividerX}" y2="106" stroke="#0c365f" stroke-width="3"></line>
+            <text x="${40 + (part / total) * 130}" y="42" text-anchor="middle" fill="#fff6df" font-size="22">${part}</text>
+            <text x="${dividerX + (missing / total) * 130}" y="42" text-anchor="middle" fill="#ffd166" font-size="22">?</text>
+            <text x="170" y="138" text-anchor="middle" fill="#bed0e7" font-size="20">Total length ${total}</text>
+          </svg>
+        `,
+        correctAnswer: missing,
+        choices: uniqueChoices(missing, function () {
+          return Math.max(1, missing + rand(-4, 4));
+        })
+      };
+    }
+
+    function lShapeQuestion() {
+      const top = rand(7, 13);
+      const bottom = rand(3, top - 2);
+      const right = rand(2, 6);
+      const missing = top - bottom;
+
+      return {
+        category: "Missing Length",
+        prompt: "What is the missing inside length?",
+        visual: `
+          <svg viewBox="0 0 340 210" aria-label="L shape with one missing side">
+            <path d="M50 42 H278 V92 H204 V158 H50 Z" fill="#dff3ff" stroke="#7bdff2" stroke-width="3"></path>
+            <text x="163" y="28" text-anchor="middle" fill="#fff6df" font-size="22">${top}</text>
+            <text x="296" y="76" fill="#fff6df" font-size="22">${right}</text>
+            <text x="112" y="178" text-anchor="middle" fill="#fff6df" font-size="22">${bottom}</text>
+            <text x="220" y="114" fill="#ffd166" font-size="24">?</text>
+          </svg>
+        `,
+        correctAnswer: missing,
+        choices: uniqueChoices(missing, function () {
+          return Math.max(1, missing + rand(-4, 4));
+        })
+      };
+    }
+
+    function squareAreaQuestion() {
+      const side = rand(2, 12);
+      const correct = side * side;
+
+      return {
+        category: "Area",
+        prompt: "What is the area of this square?",
+        visual: `
+          <svg viewBox="0 0 340 190" aria-label="Square with side length ${side}">
+            <rect x="108" y="34" width="120" height="120" fill="#dff3ff" stroke="#7bdff2" stroke-width="3"></rect>
+            <text x="168" y="24" text-anchor="middle" fill="#fff6df" font-size="22">${side}</text>
+            <text x="244" y="98" fill="#fff6df" font-size="22">${side}</text>
+          </svg>
+        `,
+        correctAnswer: correct,
+        choices: uniqueChoices(correct, function () {
+          return Math.max(1, correct + rand(-20, 20));
+        })
+      };
+    }
+
+    function rectangleAreaQuestion() {
+      const width = rand(4, 14);
+      const height = rand(2, 9);
+      const correct = width * height;
+
+      return {
+        category: "Area",
+        prompt: "What is the area of this rectangle?",
+        visual: `
+          <svg viewBox="0 0 360 180" aria-label="Rectangle with width ${width} and height ${height}">
+            <rect x="76" y="54" width="190" height="70" fill="#dff3ff" stroke="#7bdff2" stroke-width="3"></rect>
+            <text x="171" y="40" text-anchor="middle" fill="#fff6df" font-size="22">${width}</text>
+            <text x="282" y="96" fill="#fff6df" font-size="22">${height}</text>
+          </svg>
+        `,
+        correctAnswer: correct,
+        choices: uniqueChoices(correct, function () {
+          return Math.max(1, correct + rand(-16, 16));
+        })
+      };
+    }
+
+    function triangleAreaQuestion() {
+      const base = rand(4, 16);
+      const height = rand(3, 12);
+      const evenBase = base % 2 === 0 ? base : base + 1;
+      const correct = (evenBase * height) / 2;
+
+      return {
+        category: "Area",
+        prompt: "What is the area of this right triangle?",
+        visual: `
+          <svg viewBox="0 0 360 210" aria-label="Right triangle with base ${evenBase} and height ${height}">
+            <polygon points="72,156 286,156 72,54" fill="#dff3ff" stroke="#7bdff2" stroke-width="3"></polygon>
+            <path d="M72 136 H92 V156" fill="none" stroke="#0c365f" stroke-width="3"></path>
+            <text x="179" y="182" text-anchor="middle" fill="#fff6df" font-size="22">${evenBase}</text>
+            <text x="52" y="112" text-anchor="middle" fill="#fff6df" font-size="22">${height}</text>
+          </svg>
+        `,
+        correctAnswer: correct,
+        choices: uniqueChoices(correct, function () {
+          return Math.max(1, correct + rand(-14, 14));
+        })
+      };
+    }
+
+    function buildQuestionDeck() {
+      const builders = [
+        additionQuestion,
+        additionQuestion,
+        subtractionQuestion,
+        subtractionQuestion,
+        multiplicationQuestion,
+        multiplicationQuestion,
+        divisionQuestion,
+        divisionQuestion,
+        missingRectangleQuestion,
+        lShapeQuestion,
+        squareAreaQuestion,
+        rectangleAreaQuestion,
+        triangleAreaQuestion,
+        additionQuestion,
+        rectangleAreaQuestion
+      ];
+
+      return shuffle(builders).map(function (builder) {
+        return builder();
+      });
+    }
+
+    function fallbackPrizeFor(round) {
+      if (round >= 10) {
+        return prizes[9];
+      }
+
+      if (round >= 5) {
+        return prizes[4];
+      }
+
+      return 0;
+    }
+
+    function createGameState() {
+      return {
+        round: 0,
+        winnings: 0,
+        deck: buildQuestionDeck(),
+        complete: false,
+        locked: false
+      };
+    }
+
+    function renderLadder() {
+      const ladder = document.getElementById("ladder");
+
+      ladder.innerHTML = prizes.slice().reverse().map(function (prize, reverseIndex) {
+        const level = prizes.length - reverseIndex;
+        const classes = [];
+
+        if (safeLevels.includes(level)) {
+          classes.push("safe");
+        }
+
+        if (game.round === level && !game.complete) {
+          classes.push("active");
+        }
+
+        if (level < game.round || (game.complete && game.round >= level)) {
+          classes.push("cleared");
+        }
+
+        return `
+          <li class="${classes.join(" ")}">
+            <span class="level">${level}</span>
+            <span>${formatMoney(prize)}</span>
+          </li>
+        `;
+      }).join("");
+    }
+
+    function renderQuestion() {
+      const roundBadge = document.getElementById("roundBadge");
+      const earningsBadge = document.getElementById("earningsBadge");
+      const categoryLabel = document.getElementById("categoryLabel");
+      const questionText = document.getElementById("questionText");
+      const questionVisual = document.getElementById("questionVisual");
+      const answers = document.getElementById("answers");
+      const messageBox = document.getElementById("messageBox");
+
+      renderLadder();
+      earningsBadge.textContent = "Current winnings: " + formatMoney(game.winnings);
+
+      if (game.complete) {
+        roundBadge.textContent = "Game complete";
+        categoryLabel.textContent = "Champion";
+        questionText.textContent = "Ayaan reached the top of the ladder.";
+        questionVisual.innerHTML = '<div class="big-math">$1,000,000</div>';
+        answers.innerHTML = "";
+        messageBox.className = "message good";
+        messageBox.textContent = "Ayaan is the math millionaire. Start a new game for another run.";
+        return;
+      }
+
+      const currentQuestion = game.deck[game.round];
+
+      roundBadge.textContent = "Question " + (game.round + 1) + " of " + game.deck.length;
+      categoryLabel.textContent = currentQuestion.category;
+      questionText.textContent = currentQuestion.prompt;
+      questionVisual.innerHTML = currentQuestion.visual;
+      answers.innerHTML = currentQuestion.choices.map(function (choice, index) {
+        return `
+          <button class="answer" type="button" data-choice="${choice}">
+            <span class="answer-letter">${answerLetters[index]}</span>
+            <span class="answer-text">${choice}</span>
+          </button>
+        `;
+      }).join("");
+
+      messageBox.className = "message";
+      messageBox.textContent = "Pick the best answer to move Ayaan up the ladder.";
+
+      answers.querySelectorAll(".answer").forEach(function (button) {
+        button.addEventListener("click", function () {
+          handleAnswer(Number(button.dataset.choice), button);
+        });
+      });
+    }
+
+    function setStatus(title, copy) {
+      document.getElementById("statusTitle").textContent = title;
+      document.getElementById("statusCopy").textContent = copy;
+    }
+
+    function announce(message) {
+      document.getElementById("announcer").textContent = message;
+    }
+
+    function lockAnswers() {
+      document.querySelectorAll(".answer").forEach(function (button) {
+        button.disabled = true;
+      });
+    }
+
+    function revealCorrectAnswer(correctAnswer) {
+      document.querySelectorAll(".answer").forEach(function (button) {
+        if (Number(button.dataset.choice) === correctAnswer) {
+          button.classList.add("correct");
+        }
+      });
+    }
+
+    function playCelebration() {
+      const layer = document.getElementById("celebrationLayer");
+      const colors = ["#ffd166", "#7bdff2", "#b8f2e6", "#ff9f1c", "#fff6df", "#70e000"];
+
+      layer.innerHTML = "";
+
+      const badge = document.createElement("div");
+      badge.className = "celebration-badge";
+      badge.textContent = "Correct!";
+      layer.appendChild(badge);
+
+      for (let index = 0; index < 18; index += 1) {
+        const piece = document.createElement("span");
+        const spreadX = rand(-180, 180);
+        const spreadY = rand(-120, 160);
+        const rotation = rand(-220, 220);
+
+        piece.className = "confetti-piece";
+        piece.style.background = colors[index % colors.length];
+        piece.style.setProperty("--x", spreadX + "px");
+        piece.style.setProperty("--y", spreadY + "px");
+        piece.style.setProperty("--rotation", rotation + "deg");
+        piece.style.animationDelay = rand(0, 120) + "ms";
+        layer.appendChild(piece);
+      }
+
+      window.setTimeout(function () {
+        layer.innerHTML = "";
+      }, 1000);
+    }
+
+    function handleAnswer(choice, button) {
+      if (!game || game.locked || game.complete) {
+        return;
+      }
+
+      game.locked = true;
+      lockAnswers();
+
+      const currentQuestion = game.deck[game.round];
+      const messageBox = document.getElementById("messageBox");
+
+      if (choice === currentQuestion.correctAnswer) {
+        button.classList.add("correct");
+        playCelebration();
+        game.winnings = prizes[game.round];
+        game.round += 1;
+
+        if (game.round >= game.deck.length) {
+          game.complete = true;
+          setStatus("Math Millionaire", "Ayaan cleared every question and reached the top prize.");
+          announce("Correct. Ayaan is now the math millionaire.");
+          renderQuestion();
+          game.locked = false;
+          return;
+        }
+
+        messageBox.className = "message good";
+        messageBox.textContent = "Correct. Ayaan climbs to " + formatMoney(game.winnings) + ". Next question coming up.";
+        setStatus("Still Climbing", "Ayaan answered correctly and moved another step up the prize ladder.");
+        announce("Correct. Moving to the next question.");
+
+        window.setTimeout(function () {
+          game.locked = false;
+          renderQuestion();
+        }, 1050);
+
+        return;
+      }
+
+      button.classList.add("wrong");
+      revealCorrectAnswer(currentQuestion.correctAnswer);
+      game.winnings = fallbackPrizeFor(game.round);
+      game.complete = true;
+      messageBox.className = "message bad";
+      messageBox.textContent = "Not this time. The correct answer was " + currentQuestion.correctAnswer + ". Ayaan leaves with " + formatMoney(game.winnings) + ".";
+      setStatus("Game Over", "Ayaan missed a question and dropped to the last safe level reached.");
+      announce("Wrong answer. The game is over.");
+      renderLadder();
+      document.getElementById("earningsBadge").textContent = "Current winnings: " + formatMoney(game.winnings);
+      game.locked = false;
+    }
+
+    function startGame() {
+      game = createGameState();
+      setStatus("Question One", "Ayaan is on the clock. Each correct answer unlocks the next prize tier.");
+      announce("Game started. Question one is ready.");
+      renderQuestion();
+    }
+
+    document.getElementById("startButton").addEventListener("click", startGame);
+    document.getElementById("restartButton").addEventListener("click", startGame);
+
+    game = createGameState();
+    renderLadder();
+  </script>
+</body>
+</html>
