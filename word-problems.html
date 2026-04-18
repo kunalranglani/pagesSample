@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Character Word Problems</title>
+  <style>
+    :root {
+      --blue: #1d4ed8;
+      --sky: #dbeafe;
+      --gold: #fbbf24;
+      --pink: #f472b6;
+      --mint: #bbf7d0;
+      --ink: #1f2937;
+      --paper: #ffffff;
+      --line: rgba(59, 130, 246, 0.22);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(251, 191, 36, 0.24), transparent 20%),
+        radial-gradient(circle at top right, rgba(244, 114, 182, 0.18), transparent 18%),
+        linear-gradient(180deg, #f8fbff 0%, #edf6ff 100%);
+      padding: 12px;
+    }
+
+    .container {
+      max-width: 1040px;
+      margin: auto;
+      background: var(--paper);
+      padding: 18px;
+      border-radius: 22px;
+      box-shadow: 0 20px 40px rgba(29, 78, 216, 0.12);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.9rem, 4vw, 2.8rem);
+      color: var(--blue);
+    }
+
+    .subtitle {
+      margin: 8px 0 14px;
+      color: #475569;
+      line-height: 1.55;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 10px 14px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: white;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      align-items: start;
+    }
+
+    .q {
+      border: 1px solid #d8e4f7;
+      border-radius: 16px;
+      padding: 14px;
+      background:
+        linear-gradient(180deg, rgba(219, 234, 254, 0.32), rgba(255, 255, 255, 0.95));
+      break-inside: avoid;
+    }
+
+    .prompt {
+      min-height: 110px;
+      margin: 0;
+      font-size: 1.02rem;
+      line-height: 1.6;
+    }
+
+    .work-label {
+      display: block;
+      margin-top: 10px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    .work-area {
+      height: 92px;
+      margin-top: 6px;
+      border-radius: 10px;
+      background-image: linear-gradient(
+        to bottom,
+        transparent 23px,
+        var(--line) 23px,
+        var(--line) 24px,
+        transparent 24px,
+        transparent 47px,
+        var(--line) 47px,
+        var(--line) 48px,
+        transparent 48px,
+        transparent 71px,
+        var(--line) 71px,
+        var(--line) 72px,
+        transparent 72px
+      );
+      background-color: rgba(255, 255, 255, 0.9);
+    }
+
+    .footer-note {
+      margin-top: 14px;
+      text-align: center;
+      color: #475569;
+      font-size: 0.95rem;
+    }
+
+    @page {
+      margin: 0.5in 0.45in 0.35in;
+    }
+
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+        margin: 0;
+      }
+
+      .container {
+        max-width: none;
+        padding: 0.12in 0.16in 0;
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      h1 {
+        font-size: 19pt;
+      }
+
+      .subtitle {
+        margin: 4px 0 8px;
+        font-size: 9pt;
+      }
+
+      button {
+        display: none;
+      }
+
+      .grid {
+        gap: 8px;
+      }
+
+      .q {
+        padding: 10px;
+        border-radius: 10px;
+      }
+
+      .prompt {
+        min-height: 70px;
+        font-size: 10pt;
+      }
+
+      .work-area {
+        height: 74px;
+      }
+
+      .footer-note {
+        margin-top: 8px;
+        font-size: 9pt;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .prompt {
+        min-height: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Character Word Problems</h1>
+    <div class="toolbar">
+      <button type="button" onclick="generate()">New Questions</button>
+    </div>
+
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <script>
+    function rand(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function shuffle(items) {
+      const copy = items.slice();
+
+      for (let index = copy.length - 1; index > 0; index -= 1) {
+        const swapIndex = rand(0, index);
+        [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
+      }
+
+      return copy;
+    }
+
+    const marioCharacters = ["Mario", "Luigi", "Peach", "Yoshi", "Toad"];
+    const sonicCharacters = ["Sonic", "Tails", "Knuckles", "Amy", "Shadow"];
+    const disneyCharacters = ["Mickey", "Minnie", "Donald", "Daisy", "Goofy", "Elsa", "Olaf", "Moana", "Stitch"];
+    const prizes = ["coins", "rings", "stickers", "stars", "shells", "cupcakes", "balloons", "golden tickets"];
+    const places = ["at the castle fair", "during a race", "at a picnic", "in the clubhouse", "at the beach party", "during game night"];
+
+    function pick(list) {
+      return list[rand(0, list.length - 1)];
+    }
+
+    function themePair(theme) {
+      if (theme === "Mario") {
+        return shuffle(marioCharacters).slice(0, 2);
+      }
+
+      if (theme === "Sonic") {
+        return shuffle(sonicCharacters).slice(0, 2);
+      }
+
+      return shuffle(disneyCharacters).slice(0, 2);
+    }
+
+    function additionProblem(index, theme) {
+      const pair = themePair(theme);
+      const item = pick(prizes);
+      const countA = rand(4, 18);
+      const countB = rand(3, 15);
+
+      return questionMarkup(
+        index,
+        `${pair[0]} collected ${countA} ${item} ${pick(places)}. Then ${pair[1]} brought ${countB} more ${item}. How many ${item} do they have altogether?`
+      );
+    }
+
+    function subtractionProblem(index, theme) {
+      const pair = themePair(theme);
+      const item = pick(prizes);
+      const total = rand(14, 30);
+      const used = rand(3, total - 4);
+
+      return questionMarkup(
+        index,
+        `${pair[0]} had ${total} ${item} ${pick(places)}. ${pair[1]} used ${used} of them for a challenge. How many ${item} are left?`
+      );
+    }
+
+    function multiplicationProblem(index, theme) {
+      const pair = themePair(theme);
+      const rows = rand(2, 8);
+      const each = rand(2, 9);
+      const item = pick(prizes);
+
+      return questionMarkup(
+        index,
+        `${pair[0]} set up ${rows} tables ${pick(places)}. ${pair[1]} placed ${each} ${item} on each table. How many ${item} are there in all?`
+      );
+    }
+
+    function divisionProblem(index, theme) {
+      const pair = themePair(theme);
+      const groups = rand(2, 8);
+      const each = rand(2, 9);
+      const total = groups * each;
+      const item = pick(prizes);
+
+      return questionMarkup(
+        index,
+        `${pair[0]} shared ${total} ${item} equally among ${groups} friends ${pick(places)} while ${pair[1]} watched. How many ${item} did each friend get?`
+      );
+    }
+
+    function questionMarkup(index, prompt) {
+      return `
+        <div class="q">
+          <p class="prompt">${index}. ${prompt}</p>
+          <span class="work-label">Show your work and answer:</span>
+          <div class="work-area" aria-hidden="true"></div>
+        </div>
+      `;
+    }
+
+    function generate() {
+      const grid = document.getElementById("grid");
+      const themes = ["Mario", "Sonic", "Disney"];
+      const builders = [
+        additionProblem,
+        additionProblem,
+        subtractionProblem,
+        subtractionProblem,
+        multiplicationProblem,
+        multiplicationProblem,
+        divisionProblem,
+        divisionProblem,
+        additionProblem,
+        subtractionProblem
+      ];
+
+      const questions = shuffle(builders).map(function (builder, index) {
+        return builder(index + 1, themes[index % themes.length]);
+      });
+
+      grid.innerHTML = questions.join("");
+    }
+
+    generate();
+  </script>
+</body>
+</html>
