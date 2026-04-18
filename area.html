@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Area Practice</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#f5f7ff; margin:0; padding:12px; }
+    .container { max-width:920px; margin:auto; background:white; padding:14px; border-radius:16px; }
+    h1 { margin:0 0 6px; font-size:1.7rem; }
+    .subtitle { margin:0 0 10px; color:#475569; font-size:0.95rem; }
+    button { margin-bottom:10px; padding:7px 10px; border-radius:8px; border:none; background:#4f46e5; color:white; cursor:pointer; }
+    .grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; align-items:start; }
+    .q { border:1px solid #ddd; padding:8px; border-radius:10px; break-inside:avoid; }
+    .q-title { margin-bottom:6px; font-weight:700; }
+    .shape { text-align:center; margin:4px 0; }
+    svg { max-width:240px; width:100%; height:auto; }
+    .answer { margin-top:6px; font-size:0.95rem; }
+
+    @page { margin: 0.5in 0.5in 0.35in; }
+
+    @media print {
+      body { background:white; padding:0; margin:0; }
+      .container { max-width:none; padding:0.12in 0.2in 0; border-radius:0; box-shadow:none; }
+      h1 { margin:0 0 2px; font-size:16pt; }
+      .subtitle { margin:0 0 6px; font-size:9pt; }
+      button { display:none; }
+      .grid { gap:6px 8px; }
+      .q { padding:6px; border-radius:6px; border-color:#bbb; }
+      .q-title { margin-bottom:4px; font-size:10pt; }
+      .shape { margin:2px 0; }
+      svg { max-width:180px; }
+      .answer { margin-top:4px; font-size:10pt; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Area Practice</h1>
+    <p class="subtitle">12 questions with squares, rectangles, and right triangles.</p>
+    <button onclick="generate()">New Questions</button>
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <script>
+    function rand(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function shuffle(items) {
+      for (let i = items.length - 1; i > 0; i--) {
+        const j = rand(0, i);
+        [items[i], items[j]] = [items[j], items[i]];
+      }
+      return items;
+    }
+
+    function squareQuestion(index) {
+      const side = rand(2, 12);
+
+      return `
+      <div class="q">
+        <div class="q-title">${index}. Find the area of the square</div>
+        <div class="shape">
+          <svg viewBox="0 0 280 150" aria-label="Square with side length ${side}">
+            <rect x="90" y="30" width="90" height="90" fill="#dff3ff" stroke="#2b6cb0" stroke-width="2"/>
+            <text x="135" y="22" text-anchor="middle">${side}</text>
+            <text x="192" y="80" dominant-baseline="middle">${side}</text>
+          </svg>
+        </div>
+        <div class="answer">Answer: ______ square units</div>
+      </div>`;
+    }
+
+    function rectangleQuestion(index) {
+      const width = rand(4, 14);
+      const height = rand(2, 9);
+
+      return `
+      <div class="q">
+        <div class="q-title">${index}. Find the area of the rectangle</div>
+        <div class="shape">
+          <svg viewBox="0 0 280 150" aria-label="Rectangle with width ${width} and height ${height}">
+            <rect x="55" y="42" width="160" height="60" fill="#dff3ff" stroke="#2b6cb0" stroke-width="2"/>
+            <text x="135" y="32" text-anchor="middle">${width}</text>
+            <text x="228" y="75" dominant-baseline="middle">${height}</text>
+          </svg>
+        </div>
+        <div class="answer">Answer: ______ square units</div>
+      </div>`;
+    }
+
+    function rightTriangleQuestion(index) {
+      const base = rand(4, 16);
+      const height = rand(3, 12);
+
+      return `
+      <div class="q">
+        <div class="q-title">${index}. Find the area of the right triangle</div>
+        <div class="shape">
+          <svg viewBox="0 0 280 170" aria-label="Right triangle with base ${base} and height ${height}">
+            <polygon points="60,125 210,125 60,45" fill="#dff3ff" stroke="#2b6cb0" stroke-width="2"/>
+            <path d="M60 110 H75 V125" fill="none" stroke="#555" stroke-width="2"/>
+            <text x="135" y="145" text-anchor="middle">${base}</text>
+            <text x="42" y="88" text-anchor="middle">${height}</text>
+          </svg>
+        </div>
+        <div class="answer">Answer: ______ square units</div>
+      </div>`;
+    }
+
+    function generate() {
+      const grid = document.getElementById('grid');
+      const builders = [
+        (index) => squareQuestion(index),
+        (index) => squareQuestion(index),
+        (index) => squareQuestion(index),
+        (index) => squareQuestion(index),
+        (index) => rectangleQuestion(index),
+        (index) => rectangleQuestion(index),
+        (index) => rectangleQuestion(index),
+        (index) => rectangleQuestion(index),
+        (index) => rightTriangleQuestion(index),
+        (index) => rightTriangleQuestion(index),
+        (index) => rightTriangleQuestion(index),
+        (index) => rightTriangleQuestion(index)
+      ];
+
+      shuffle(builders);
+      grid.innerHTML = builders.map(function (builder, index) {
+        return builder(index + 1);
+      }).join('');
+    }
+
+    generate();
+  </script>
+</body>
+</html>
