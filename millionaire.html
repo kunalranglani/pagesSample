@@ -83,12 +83,12 @@
     }
 
     .ladder-card {
-      padding: 18px;
+      padding: 14px;
     }
 
     .ladder-title {
-      margin: 0 0 12px;
-      font-size: 1.1rem;
+      margin: 0 0 8px;
+      font-size: 1rem;
       color: var(--cream);
     }
 
@@ -97,19 +97,20 @@
       margin: 0;
       padding: 0;
       display: grid;
-      gap: 8px;
+      gap: 6px;
     }
 
     .ladder li {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 12px;
-      border-radius: 16px;
+      padding: 7px 10px;
+      border-radius: 12px;
       color: var(--muted);
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid transparent;
       transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+      font-size: 0.92rem;
     }
 
     .ladder li.active {
@@ -355,8 +356,8 @@
     }
 
     .status-card {
-      padding: 18px;
-      border-radius: 22px;
+      padding: 16px;
+      border-radius: 18px;
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.04));
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
@@ -373,9 +374,9 @@
     }
 
     .message {
-      min-height: 92px;
-      margin-top: 14px;
-      padding: 16px;
+      min-height: 76px;
+      margin-top: 0;
+      padding: 14px;
       border-radius: 18px;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -478,7 +479,7 @@
         <div class="question-box">
           <div class="celebration-layer" id="celebrationLayer" aria-hidden="true"></div>
           <p class="category" id="categoryLabel">Warm Up</p>
-          <p class="question-text" id="questionText">Press start to load the first question for Ayaan.</p>
+          <p class="question-text" id="questionText">The first question is loading for Ayaan.</p>
           <div class="question-visual" id="questionVisual" aria-live="polite"></div>
           <div class="answers" id="answers"></div>
           <p class="screen-reader" id="announcer" aria-live="assertive"></p>
@@ -486,18 +487,17 @@
       </div>
 
       <aside class="status-panel">
-        <div class="status-card">
-          <h2 id="statusTitle">Ready To Play</h2>
-          <p class="status-copy" id="statusCopy">Ayaan starts at the bottom of the ladder. Each correct answer moves him one step closer to the million.</p>
-          <div class="controls">
-            <button class="button" id="startButton" type="button">Start Game</button>
-            <button class="button secondary" id="restartButton" type="button">New Game</button>
-          </div>
-        </div>
-
         <div class="ladder-card" aria-labelledby="ladderTitle">
           <h2 class="ladder-title" id="ladderTitle">Prize Ladder</h2>
           <ol class="ladder" id="ladder"></ol>
+        </div>
+
+        <div class="status-card">
+          <h2 id="statusTitle">Question One</h2>
+          <p class="status-copy" id="statusCopy">Ayaan starts immediately. Each correct answer moves him one step closer to the million.</p>
+          <div class="controls">
+            <button class="button secondary" id="restartButton" type="button">New Game</button>
+          </div>
         </div>
 
         <div class="status-card">
@@ -509,7 +509,7 @@
           </ul>
         </div>
 
-        <div class="message" id="messageBox">Choose Start Game to begin.</div>
+        <div class="message" id="messageBox">Ayaan is on the first question.</div>
       </aside>
     </section>
   </main>
@@ -970,15 +970,13 @@
     function startGame() {
       game = createGameState();
       setStatus("Question One", "Ayaan is on the clock. Each correct answer unlocks the next prize tier.");
-      announce("Game started. Question one is ready.");
+      announce("Question one is ready.");
       renderQuestion();
     }
 
-    document.getElementById("startButton").addEventListener("click", startGame);
     document.getElementById("restartButton").addEventListener("click", startGame);
 
-    game = createGameState();
-    renderLadder();
+    startGame();
   </script>
 </body>
 </html>
