@@ -10,8 +10,8 @@
     h1 { margin:0 0 6px; font-size:1.7rem; }
     .subtitle { margin:0 0 10px; color:#475569; font-size:0.95rem; }
     button { margin-bottom:10px; padding:7px 10px; border-radius:8px; border:none; background:#4f46e5; color:white; cursor:pointer; }
-    .grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
-    .q { border:1px solid #ddd; padding:8px; border-radius:10px; break-inside:avoid; }
+    .grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; align-items:start; }
+    .q { border:1px solid #ddd; padding:8px; border-radius:10px; break-inside:avoid; align-self:start; }
     .q-title { margin-bottom:6px; font-weight:700; }
     .problem { width:128px; margin:0 auto; font-size:22px; text-align:right; }
     .carry-row { height:14px; margin-bottom:2px; }
@@ -27,32 +27,32 @@
     svg { max-width:240px; width:100%; height:auto; }
     .answer { margin-top:4px; font-size:0.95rem; }
 
-    @page { margin: 0.35in; }
+    @page { margin: 0.5in 0.5in 0.35in; }
 
     @media print {
-      body { background:white; padding:0; }
-      .container { max-width:none; padding:0; border-radius:0; box-shadow:none; }
-      h1 { margin:0 0 4px; font-size:18px; }
-      .subtitle { margin:0 0 8px; font-size:12px; }
+      body { background:white; padding:0; margin:0; }
+      .container { max-width:none; padding:0.12in 0.2in 0; border-radius:0; box-shadow:none; }
+      h1 { margin:0 0 2px; font-size:16pt; }
+      .subtitle { margin:0 0 6px; font-size:9pt; }
       button { display:none; }
-      .grid { gap:6px; }
-      .q { padding:6px; border-radius:6px; }
-      .q-title { margin-bottom:4px; font-size:13px; }
-      .problem { font-size:18px; width:108px; }
-      .carry-row { height:12px; margin-bottom:1px; }
-      .problem-line { margin-bottom:2px; }
+      .grid { gap:4px 8px; align-items:start; }
+      .q { padding:5px 8px; border-radius:4px; border-color:#bbb; }
+      .q-title { margin-bottom:3px; font-size:10pt; }
+      .problem { font-size:16px; width:100px; }
+      .carry-row { height:10px; margin-bottom:1px; }
+      .problem-line { margin-bottom:1px; }
       .answer-bar { margin-top:2px; }
-      .work-area { height:58px; margin-top:4px; }
-      .shape { margin:2px 0; }
-      svg { max-width:185px; }
-      .answer { margin-top:2px; font-size:12px; }
+      .work-area { height:44px; margin-top:3px; }
+      .shape { margin:1px 0; }
+      svg { max-width:170px; }
+      .answer { margin-top:2px; font-size:10pt; }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Mixed Math Practice</h1>
-    <p class="subtitle">10 questions with addition, subtraction, multiplication, division, and missing length.</p>
+    <p class="subtitle">14 questions with addition, subtraction, multiplication, division, and missing length.</p>
     <button onclick="generate()">New Questions</button>
     <div class="grid" id="grid"></div>
   </div>
@@ -178,10 +178,14 @@
       let builders = [
         (index) => verticalQuestion(index, '+'),
         (index) => verticalQuestion(index, '+'),
+        (index) => verticalQuestion(index, '+'),
+        (index) => verticalQuestion(index, '-'),
         (index) => verticalQuestion(index, '-'),
         (index) => verticalQuestion(index, '-'),
         (index) => multiplyQuestion(index),
         (index) => multiplyQuestion(index),
+        (index) => multiplyQuestion(index),
+        (index) => divisionQuestion(index),
         (index) => divisionQuestion(index),
         (index) => divisionQuestion(index),
         (index) => splitRectQuestion(index),
