@@ -1,28 +1,262 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <title>Pages Sample</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      :root {
+        --sky: #d8f0ff;
+        --sun: #ffd54f;
+        --berry: #ff5d8f;
+        --mint: #5ed3b3;
+        --ocean: #1d5fa7;
+        --ink: #183153;
+        --paper: rgba(255, 255, 255, 0.92);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Trebuchet MS", "Gill Sans", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top left, rgba(255, 255, 255, 0.9), transparent 28%),
+          radial-gradient(circle at 85% 15%, rgba(255, 213, 79, 0.75), transparent 16%),
+          linear-gradient(180deg, #8ed8ff 0%, #c6f0ff 44%, #fff9d7 100%);
+        overflow-x: hidden;
+      }
+
+      body::before,
+      body::after {
+        content: "";
+        position: fixed;
+        inset: auto;
+        border-radius: 999px;
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      body::before {
+        width: 220px;
+        height: 220px;
+        left: -70px;
+        bottom: 40px;
+        background: rgba(94, 211, 179, 0.28);
+        filter: blur(8px);
+      }
+
+      body::after {
+        width: 180px;
+        height: 180px;
+        right: -40px;
+        top: 120px;
+        background: rgba(255, 93, 143, 0.18);
+        filter: blur(6px);
+      }
+
+      .page {
+        position: relative;
+        z-index: 1;
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 28px 20px 48px;
+      }
+
+      .hero {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 249, 214, 0.92));
+        border: 4px solid rgba(255, 255, 255, 0.65);
+        border-radius: 32px;
+        padding: 28px;
+        box-shadow: 0 22px 50px rgba(24, 49, 83, 0.18);
+      }
+
+      .eyebrow {
+        display: inline-block;
+        margin: 0 0 12px;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: var(--berry);
+        color: white;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+      }
+
+      h1 {
+        margin: 0;
+        font-family: "Marker Felt", "Comic Sans MS", cursive;
+        font-size: clamp(2.4rem, 5vw, 4.5rem);
+        line-height: 0.95;
+        color: var(--ocean);
+      }
+
+      .hero p {
+        max-width: 680px;
+        margin: 16px 0 0;
+        font-size: 1.1rem;
+        line-height: 1.6;
+      }
+
+      .sparkles {
+        display: flex;
+        gap: 10px;
+        margin-top: 18px;
+        flex-wrap: wrap;
+      }
+
+      .sparkles span {
+        padding: 8px 12px;
+        border-radius: 14px;
+        background: white;
+        box-shadow: 0 10px 20px rgba(29, 95, 167, 0.12);
+        font-weight: 700;
+      }
+
+      .section-title {
+        margin: 28px 0 14px;
+        font-size: 1.35rem;
+      }
+
+      .cards {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 18px;
+      }
+
+      .cards li {
+        margin: 0;
+      }
+
+      .cards a {
+        display: block;
+        height: 100%;
+        text-decoration: none;
+        color: inherit;
+        background: var(--paper);
+        border: 3px solid rgba(255, 255, 255, 0.8);
+        border-radius: 24px;
+        padding: 18px;
+        box-shadow: 0 18px 35px rgba(24, 49, 83, 0.12);
+        transform: translateY(0) rotate(0deg);
+        transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+      }
+
+      .cards a:hover,
+      .cards a:focus-visible {
+        transform: translateY(-6px) rotate(-1deg);
+        box-shadow: 0 24px 42px rgba(24, 49, 83, 0.18);
+        border-color: rgba(255, 93, 143, 0.45);
+        outline: none;
+      }
+
+      .cards strong {
+        display: block;
+        font-size: 1.15rem;
+        color: var(--ocean);
+      }
+
+      .cards span {
+        display: block;
+        margin-top: 8px;
+        line-height: 1.5;
+      }
+
+      .tag {
+        display: inline-block;
+        margin-top: 14px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: #eef7ff;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--ocean);
+      }
+
+      .footer-note {
+        margin-top: 24px;
+        text-align: center;
+        font-weight: 700;
+      }
+
+      @media (max-width: 640px) {
+        .page {
+          padding: 18px 14px 36px;
+        }
+
+        .hero {
+          padding: 22px 18px;
+          border-radius: 24px;
+        }
+
+        .hero p {
+          font-size: 1rem;
+        }
+      }
+    </style>
   </head>
 <body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
-  <p id="custom"></p> <br /> <br/>
-  <button id="maxScale">add max scale</button> <br /><br />
-  <label>name</label> <input /><br /><br />
-<label>name2</label> <input /><br /><br />
-<label>name3</label> <input /><br /><br />
-<label>name4</label> <input /><br /><br />
-  <script
-  src="https://code.jquery.com/jquery-3.4.1.min.js"
-  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-  crossorigin="anonymous"></script>
-  <script>
-    $(function() {
-      $("#custom").text("its cool!");
-      $("#maxScale").click(()=>{
-        $("meta").attr("content", "width=device-width, initial-scale=1, maximum-scale=1");
-      });
-    });
-  </script>
+<main class="page">
+  <section class="hero">
+    <div class="eyebrow">Kids Math Playground</div>
+    <h1>Pick a fun math challenge</h1>
+    <p>Practice number skills with bright, simple worksheets made for quick learning. Choose a page below and jump into addition, multiplication, or missing length puzzles.</p>
+    <div class="sparkles" aria-hidden="true">
+      <span>123</span>
+      <span>+</span>
+      <span>x</span>
+      <span>?</span>
+      <span>=</span>
+    </div>
+  </section>
+
+  <h2 class="section-title">Available Pages</h2>
+  <ul class="cards">
+    <li>
+      <a href="math.html">
+        <strong>Math Practice</strong>
+        <span>Start with a general set of math questions for everyday practice.</span>
+        <span class="tag">Warm-up</span>
+      </a>
+    </li>
+    <li>
+      <a href="math-mixed.html">
+        <strong>Mixed Math</strong>
+        <span>Try a mix of question types to keep each round different and exciting.</span>
+        <span class="tag">Mix It Up</span>
+      </a>
+    </li>
+    <li>
+      <a href="math-multiplication.html">
+        <strong>Multiplication</strong>
+        <span>Focus on times tables and quick multiplication practice.</span>
+        <span class="tag">Times Tables</span>
+      </a>
+    </li>
+    <li>
+      <a href="missing-length.html">
+        <strong>Missing Length</strong>
+        <span>Look at shapes and figure out the missing measurement.</span>
+        <span class="tag">Geometry</span>
+      </a>
+    </li>
+    <li>
+      <a href="missing-length-rectangle.html">
+        <strong>Rectangle Lengths</strong>
+        <span>Practice missing lengths using simple rectangles only.</span>
+        <span class="tag">Easy Shapes</span>
+      </a>
+    </li>
+  </ul>
+
+  <p class="footer-note">Learn a little. Solve a lot.</p>
+</main>
 </body>
 </html>
