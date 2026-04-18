@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ayaan's Mixed Math Practice</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#f5f7ff; margin:0; padding:12px; }
+    .container { max-width:920px; margin:auto; background:white; padding:14px; border-radius:16px; }
+    h1 { margin:0 0 6px; font-size:1.7rem; }
+    .subtitle { margin:0 0 10px; color:#475569; font-size:0.95rem; }
+    button { margin-bottom:10px; padding:7px 10px; border-radius:8px; border:none; background:#4f46e5; color:white; cursor:pointer; }
+    .grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+    .q { border:1px solid #ddd; padding:8px; border-radius:10px; break-inside:avoid; }
+    .q-title { margin-bottom:6px; font-weight:700; }
+    .problem { width:128px; margin:0 auto; font-size:22px; text-align:right; }
+    .carry-row { height:14px; margin-bottom:2px; }
+    .problem-line { margin-bottom:4px; }
+    .answer-bar { border-top:2px solid #111; margin-top:4px; }
+    .work-area {
+      height:72px;
+      margin-top:6px;
+      border-radius:6px;
+      background-image: linear-gradient(to bottom, transparent 23px, rgba(99, 102, 241, 0.18) 23px, rgba(99, 102, 241, 0.18) 24px, transparent 24px, transparent 47px, rgba(99, 102, 241, 0.18) 47px, rgba(99, 102, 241, 0.18) 48px, transparent 48px);
+    }
+    .shape { text-align:center; margin:4px 0; }
+    svg { max-width:240px; width:100%; height:auto; }
+    .answer { margin-top:4px; font-size:0.95rem; }
+
+    @page { margin: 0.35in; }
+
+    @media print {
+      body { background:white; padding:0; }
+      .container { max-width:none; padding:0; border-radius:0; box-shadow:none; }
+      h1 { margin:0 0 4px; font-size:18px; }
+      .subtitle { margin:0 0 8px; font-size:12px; }
+      button { display:none; }
+      .grid { gap:6px; }
+      .q { padding:6px; border-radius:6px; }
+      .q-title { margin-bottom:4px; font-size:13px; }
+      .problem { font-size:18px; width:108px; }
+      .carry-row { height:12px; margin-bottom:1px; }
+      .problem-line { margin-bottom:2px; }
+      .answer-bar { margin-top:2px; }
+      .work-area { height:58px; margin-top:4px; }
+      .shape { margin:2px 0; }
+      svg { max-width:185px; }
+      .answer { margin-top:2px; font-size:12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Ayaan's Mixed Math Practice</h1>
+    <p class="subtitle">10 questions with addition, subtraction, multiplication, division, and missing length.</p>
+    <button onclick="generate()">New Questions</button>
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <script>
+    function rand(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function shuffle(items) {
+      for (let i = items.length - 1; i > 0; i--) {
+        let j = rand(0, i);
+        [items[i], items[j]] = [items[j], items[i]];
+      }
+      return items;
+    }
+
+    function verticalQuestion(index, operator) {
+      let top;
+      let bottom;
+
+      if (operator === '+') {
+        top = rand(100, 999);
+        bottom = rand(50, 499);
+      } else {
+        top = rand(200, 999);
+        bottom = rand(50, top - 1);
+      }
+
+      return `
+      <div class="q">
+        <div class="q-title">${index}. Solve</div>
+        <div class="problem">
+          <div class="carry-row"></div>
+          <div class="problem-line">${top}</div>
+          <div class="problem-line">${operator} ${bottom}</div>
+          <div class="answer-bar"></div>
+          <div class="work-area"></div>
+        </div>
+      </div>`;
+    }
+
+    function multiplyQuestion(index) {
+      let top = rand(10, 99);
+      let bottom = rand(2, 9);
+
+      return `
+      <div class="q">
+        <div class="q-title">${index}. Multiply</div>
+        <div class="problem">
+          <div class="carry-row"></div>
+          <div class="problem-line">${top}</div>
+          <div class="problem-line">x ${bottom}</div>
+          <div class="answer-bar"></div>
+          <div class="work-area"></div>
+        </div>
+      </div>`;
+    }
+
+    function divisionQuestion(index) {
+      let bottom = rand(2, 10);
+      let answer = rand(2, 12);
+      let top = bottom * answer;
+
+      return `
+      <div class="q">
+        <div class="q-title">${index}. Divide</div>
+        <div class="problem">
+          <div class="carry-row"></div>
+          <div class="problem-line">${top}</div>
+          <div class="problem-line">/ ${bottom}</div>
+          <div class="answer-bar"></div>
+          <div class="work-area"></div>
+        </div>
+      </div>`;
+    }
+
+    function splitRectQuestion(index) {
+      let total = rand(8, 15);
+      let part = rand(2, total - 2);
+      let missing = total - part;
+
+      return `
+      <div class="q">
+        <div class="q-title">${index}. Find the missing length</div>
+        <div class="shape">
+          <svg viewBox="0 0 300 120">
+            <rect x="20" y="40" width="200" height="40" fill="#dff3ff" stroke="#2b6cb0" stroke-width="2"/>
+            <line x1="${20 + (part / total) * 200}" y1="40" x2="${20 + (part / total) * 200}" y2="80" stroke="#555" stroke-width="2"/>
+            <text x="${20 + (part / total) * 100}" y="30" text-anchor="middle">${part}</text>
+            <text x="${20 + (part / total) * 200 + (missing / total) * 100}" y="30" text-anchor="middle" fill="red">?</text>
+            <text x="120" y="105" text-anchor="middle">${total}</text>
+          </svg>
+        </div>
+        <div class="answer">Answer: ______</div>
+      </div>`;
+    }
+
+    function lShapeQuestion(index) {
+      let top = rand(6, 12);
+      let right = rand(2, 6);
+      let bottom = rand(3, 8);
+      let missing = top - bottom;
+
+      return `
+      <div class="q">
+        <div class="q-title">${index}. Find the missing length</div>
+        <div class="shape">
+          <svg viewBox="0 0 300 180">
+            <path d="M40 40 H240 V80 H180 V140 H40 Z" fill="#dff3ff" stroke="#2b6cb0" stroke-width="2"/>
+            <text x="140" y="30" text-anchor="middle">${top}</text>
+            <text x="260" y="65">${right}</text>
+            <text x="110" y="155">${bottom}</text>
+            <text x="190" y="95" fill="red">?</text>
+          </svg>
+        </div>
+        <div class="answer">Answer: ______</div>
+      </div>`;
+    }
+
+    function generate() {
+      let grid = document.getElementById('grid');
+      let builders = [
+        (index) => verticalQuestion(index, '+'),
+        (index) => verticalQuestion(index, '+'),
+        (index) => verticalQuestion(index, '-'),
+        (index) => verticalQuestion(index, '-'),
+        (index) => multiplyQuestion(index),
+        (index) => multiplyQuestion(index),
+        (index) => divisionQuestion(index),
+        (index) => divisionQuestion(index),
+        (index) => splitRectQuestion(index),
+        (index) => lShapeQuestion(index)
+      ];
+
+      shuffle(builders);
+      grid.innerHTML = builders.map(function (builder, index) {
+        return builder(index + 1);
+      }).join('');
+    }
+
+    generate();
+  </script>
+</body>
+</html>
