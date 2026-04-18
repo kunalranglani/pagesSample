@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ayaan's Math Millionaire</title>
+  <title>Math Millionaire</title>
   <style>
     :root {
       --night: #081427;
@@ -479,7 +479,7 @@
         <div class="question-box">
           <div class="celebration-layer" id="celebrationLayer" aria-hidden="true"></div>
           <p class="category" id="categoryLabel">Warm Up</p>
-          <p class="question-text" id="questionText">The first question is loading for Ayaan.</p>
+          <p class="question-text" id="questionText">The first question is loading.</p>
           <div class="question-visual" id="questionVisual" aria-live="polite"></div>
           <div class="answers" id="answers"></div>
           <p class="screen-reader" id="announcer" aria-live="assertive"></p>
@@ -494,7 +494,7 @@
 
         <div class="status-card">
           <h2 id="statusTitle">Question One</h2>
-          <p class="status-copy" id="statusCopy">Ayaan starts immediately. Each correct answer moves him one step closer to the million.</p>
+          <p class="status-copy" id="statusCopy">The game starts immediately. Each correct answer moves you one step closer to the million.</p>
           <div class="controls">
             <button class="button secondary" id="restartButton" type="button">New Game</button>
           </div>
@@ -505,11 +505,11 @@
           <ul class="mini-list">
             <li>Every round has exactly four answer choices.</li>
             <li>Question types are pulled from the existing worksheet pages.</li>
-            <li>Wrong answers drop Ayaan to the last safe level.</li>
+            <li>Wrong answers drop you to the last safe level.</li>
           </ul>
         </div>
 
-        <div class="message" id="messageBox">Ayaan is on the first question.</div>
+        <div class="message" id="messageBox">The first question is ready.</div>
       </aside>
     </section>
   </main>
@@ -828,11 +828,11 @@
       if (game.complete) {
         roundBadge.textContent = "Game complete";
         categoryLabel.textContent = "Champion";
-        questionText.textContent = "Ayaan reached the top of the ladder.";
+        questionText.textContent = "You reached the top of the ladder.";
         questionVisual.innerHTML = '<div class="big-math">$1,000,000</div>';
         answers.innerHTML = "";
         messageBox.className = "message good";
-        messageBox.textContent = "Ayaan is the math millionaire. Start a new game for another run.";
+        messageBox.textContent = "You are the math millionaire. Start a new game for another run.";
         return;
       }
 
@@ -852,7 +852,7 @@
       }).join("");
 
       messageBox.className = "message";
-      messageBox.textContent = "Pick the best answer to move Ayaan up the ladder.";
+      messageBox.textContent = "Pick the best answer to move up the ladder.";
 
       answers.querySelectorAll(".answer").forEach(function (button) {
         button.addEventListener("click", function () {
@@ -934,16 +934,16 @@
 
         if (game.round >= game.deck.length) {
           game.complete = true;
-          setStatus("Math Millionaire", "Ayaan cleared every question and reached the top prize.");
-          announce("Correct. Ayaan is now the math millionaire.");
+          setStatus("Math Millionaire", "You cleared every question and reached the top prize.");
+          announce("Correct. You are now the math millionaire.");
           renderQuestion();
           game.locked = false;
           return;
         }
 
         messageBox.className = "message good";
-        messageBox.textContent = "Correct. Ayaan climbs to " + formatMoney(game.winnings) + ". Next question coming up.";
-        setStatus("Still Climbing", "Ayaan answered correctly and moved another step up the prize ladder.");
+        messageBox.textContent = "Correct. You climb to " + formatMoney(game.winnings) + ". Next question coming up.";
+        setStatus("Still Climbing", "You answered correctly and moved another step up the prize ladder.");
         announce("Correct. Moving to the next question.");
 
         window.setTimeout(function () {
@@ -959,8 +959,8 @@
       game.winnings = fallbackPrizeFor(game.round);
       game.complete = true;
       messageBox.className = "message bad";
-      messageBox.textContent = "Not this time. The correct answer was " + currentQuestion.correctAnswer + ". Ayaan leaves with " + formatMoney(game.winnings) + ".";
-      setStatus("Game Over", "Ayaan missed a question and dropped to the last safe level reached.");
+      messageBox.textContent = "Not this time. The correct answer was " + currentQuestion.correctAnswer + ". You leave with " + formatMoney(game.winnings) + ".";
+      setStatus("Game Over", "You missed a question and dropped to the last safe level reached.");
       announce("Wrong answer. The game is over.");
       renderLadder();
       document.getElementById("earningsBadge").textContent = "Current winnings: " + formatMoney(game.winnings);
@@ -969,7 +969,7 @@
 
     function startGame() {
       game = createGameState();
-      setStatus("Question One", "Ayaan is on the clock. Each correct answer unlocks the next prize tier.");
+      setStatus("Question One", "You are on the clock. Each correct answer unlocks the next prize tier.");
       announce("Question one is ready.");
       renderQuestion();
     }
