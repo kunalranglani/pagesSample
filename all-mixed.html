@@ -23,6 +23,11 @@
       border-radius:6px;
       background-image: linear-gradient(to bottom, transparent 23px, rgba(99, 102, 241, 0.18) 23px, rgba(99, 102, 241, 0.18) 24px, transparent 24px, transparent 47px, rgba(99, 102, 241, 0.18) 47px, rgba(99, 102, 241, 0.18) 48px, transparent 48px);
     }
+    .long-division { width:110px; margin:0 auto; }
+    .quotient-line { width:54px; height:18px; margin:0 0 2px 44px; border-bottom:2px solid #111; }
+    .division-row { display:flex; align-items:flex-start; justify-content:center; font-size:26px; line-height:1; }
+    .divisor { width:24px; text-align:right; padding-right:6px; }
+    .dividend { min-width:56px; padding:2px 0 0 8px; border-top:2px solid #111; border-left:2px solid #111; text-align:right; }
     .shape { text-align:center; margin:4px 0; }
     svg { max-width:240px; width:100%; height:auto; }
     .answer { margin-top:4px; font-size:0.95rem; }
@@ -32,8 +37,8 @@
     @media print {
       body { background:white; padding:0; margin:0; }
       .container { max-width:none; padding:0.12in 0.2in 0; border-radius:0; box-shadow:none; }
-      h1 { margin:0 0 2px; font-size:16pt; }
-      .subtitle { margin:0 0 6px; font-size:9pt; }
+      h1,
+      .subtitle,
       button { display:none; }
       .grid { gap:4px 8px; align-items:start; }
       .q { padding:5px 8px; border-radius:4px; border-color:#bbb; }
@@ -43,6 +48,11 @@
       .problem-line { margin-bottom:1px; }
       .answer-bar { margin-top:2px; }
       .work-area { height:44px; margin-top:3px; }
+      .long-division { width:90px; }
+      .quotient-line { width:44px; height:15px; margin-left:36px; }
+      .division-row { font-size:21px; }
+      .divisor { width:20px; padding-right:5px; }
+      .dividend { min-width:46px; padding-left:6px; }
       .shape { margin:1px 0; }
       svg { max-width:170px; }
       .answer { margin-top:2px; font-size:10pt; }
@@ -52,7 +62,7 @@
 <body>
   <div class="container">
     <h1>Mixed Math Practice</h1>
-    <p class="subtitle">14 questions with addition, subtraction, multiplication, division, missing length, and area.</p>
+    <p class="subtitle">14 questions with addition, subtraction, multiplication, division, easy long division, missing length, and area.</p>
     <button onclick="generate()">New Questions</button>
     <div class="grid" id="grid"></div>
   </div>
@@ -125,6 +135,46 @@
           <div class="problem-line">${top}</div>
           <div class="problem-line">/ ${bottom}</div>
           <div class="answer-bar"></div>
+          <div class="work-area"></div>
+        </div>
+      </div>`;
+    }
+
+    function buildEasyLongDivisionBank() {
+      let divisors = [2, 3, 4, 5];
+      let bank = [];
+
+      divisors.forEach(function (divisor) {
+        let firstDigits = [];
+        let secondDigits = [0];
+
+        for (let digit = divisor; digit <= 9; digit += divisor) {
+          firstDigits.push(digit);
+          secondDigits.push(digit);
+        }
+
+        firstDigits.forEach(function (firstDigit) {
+          secondDigits.forEach(function (secondDigit) {
+            bank.push({ divisor: divisor, dividend: firstDigit * 10 + secondDigit });
+          });
+        });
+      });
+
+      return bank;
+    }
+
+    function easyLongDivisionQuestion(index) {
+      let problem = shuffle(buildEasyLongDivisionBank())[0];
+
+      return `
+      <div class="q">
+        <div class="q-title">${index}. Divide</div>
+        <div class="long-division">
+          <div class="quotient-line"></div>
+          <div class="division-row">
+            <div class="divisor">${problem.divisor}</div>
+            <div class="dividend">${problem.dividend}</div>
+          </div>
           <div class="work-area"></div>
         </div>
       </div>`;
@@ -243,9 +293,9 @@
         (index) => multiplyQuestion(index),
         (index) => divisionQuestion(index),
         (index) => divisionQuestion(index),
+        (index) => easyLongDivisionQuestion(index),
         (index) => splitRectQuestion(index),
         (index) => lShapeQuestion(index),
-        (index) => areaQuestion(index),
         (index) => areaQuestion(index),
         (index) => areaQuestion(index),
         (index) => areaQuestion(index)
