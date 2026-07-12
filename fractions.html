@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fraction Practice</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#f5f7ff; margin:0; padding:12px; }
+    .container { max-width:920px; margin:auto; background:white; padding:14px; border-radius:16px; }
+    h1 { margin:0 0 6px; font-size:1.7rem; }
+    .subtitle { margin:0 0 10px; color:#475569; font-size:0.95rem; }
+    button { margin-bottom:10px; padding:7px 10px; border-radius:8px; border:none; background:#4f46e5; color:white; cursor:pointer; }
+    .grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; align-items:start; }
+    .q { border:1px solid #ddd; padding:8px; border-radius:10px; break-inside:avoid; }
+    .q-title { margin-bottom:6px; font-weight:700; }
+    .shape { text-align:center; margin:4px 0; }
+    svg { max-width:240px; width:100%; height:auto; }
+    .answer { margin-top:6px; font-size:0.95rem; }
+
+    @page { margin: 0.5in 0.5in 0.35in; }
+
+    @media print {
+      body { background:white; padding:0; margin:0; }
+      .container { max-width:none; padding:0.12in 0.2in 0; border-radius:0; box-shadow:none; }
+      h1,
+      .subtitle,
+      button { display:none; }
+      .grid { gap:6px 8px; }
+      .q { padding:6px; border-radius:6px; border-color:#bbb; }
+      .q-title { margin-bottom:4px; font-size:10pt; }
+      .shape { margin:2px 0; }
+      svg { max-width:180px; }
+      .answer { margin-top:4px; font-size:10pt; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Fraction Practice</h1>
+    <p class="subtitle">16 easy fraction questions with shaded parts, simple fraction names, and common names like half and quarter.</p>
+    <button onclick="generate()">New Questions</button>
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <script>
+    function rand(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function shuffle(items) {
+      for (let i = items.length - 1; i > 0; i--) {
+        const j = rand(0, i);
+        [items[i], items[j]] = [items[j], items[i]];
+      }
+      return items;
+    }
+
+    function barSvg(totalParts, shadedParts, label) {
+      const width = 260;
+      const height = 110;
+      const x = 20;
+      const y = 30;
+      const partWidth = 200 / totalParts;
+      let parts = '';
+
+      for (let index = 0; index < totalParts; index++) {
+        const fill = index < shadedParts ? '#ffcf5a' : '#ffffff';
+        parts += `<rect x="${x + index * partWidth}" y="${y}" width="${partWidth}" height="42" fill="${fill}" stroke="#1f4f8c" stroke-width="2"></rect>`;
+      }
+
+      return `
+        <svg viewBox="0 0 ${width} ${height}" aria-label="${label}">
+          ${parts}
+        </svg>`;
+    }
+
+    function circlesSvg(totalParts, shadedParts, label) {
+      let circles = '';
+
+      for (let index = 0; index < totalParts; index++) {
+        const cx = 32 + index * 34;
+        const fill = index < shadedParts ? '#6fd3a8' : '#ffffff';
+        circles += `<circle cx="${cx}" cy="45" r="14" fill="${fill}" stroke="#1f4f8c" stroke-width="2"></circle>`;
+      }
+
+      return `
+        <svg viewBox="0 0 240 90" aria-label="${label}">
+          ${circles}
+        </svg>`;
+    }
+
+    function fractionWords(numerator, denominator) {
+      const denominatorWords = {
+        2: numerator === 1 ? 'half' : 'halves',
+        3: numerator === 1 ? 'third' : 'thirds',
+        4: numerator === 1 ? 'fourth' : 'fourths',
+        5: numerator === 1 ? 'fifth' : 'fifths',
+        6: numerator === 1 ? 'sixth' : 'sixths'
+      };
+      const numeratorWords = ['zero', 'one', 'two', 'three', 'four', 'five', 'six'];
+      return `${numeratorWords[numerator]} ${denominatorWords[denominator]}`;
+    }
+
+    function commonFractionNameQuestion(index) {
+      const options = [
+        { fraction: '1/2', name: 'half' },
+        { fraction: '1/4', name: 'quarter' },
+        { fraction: '2/4', name: 'two quarters' },
+        { fraction: '3/4', name: 'three quarters' }
+      ];
+      const choice = options[rand(0, options.length - 1)];
+
+      return `
+      <div class="q">
+        <div class="q-title">${index}. Write the common name</div>
+        <div class="shape"><strong>${choice.fraction}</strong></div>
+        <div class="answer">Answer: ______</div>
+      </div>`;
+    }
+
+    function shadedFractionQuestion(index) {
+      const denominator = rand(2, 5);
+      const numerator = rand(1, denominator - 1);
+      const useCircles = Math.random() < 0.35;
+      const visual = useCircles
+        ? circlesSvg(denominator, numerator, `${numerator} of ${denominator} circles shaded`)
+        : barSvg(denominator, numerator, `${numerator} of ${denominator} parts shaded`);
+
+      return `
+      <div class="q">
+        <div class="q-title">${index}. Write the shaded fraction</div>
+        <div class="shape">${visual}</div>
+        <div class="answer">Answer: ______</div>
+      </div>`;
+    }
+
+    function wordFractionQuestion(index) {
+      const denominator = rand(2, 6);
+      const numerator = rand(1, denominator - 1);
+
+      return `
+      <div class="q">
+        <div class="q-title">${index}. Write this fraction in numbers</div>
+        <div class="shape"><strong>${fractionWords(numerator, denominator)}</strong></div>
+        <div class="answer">Answer: ______</div>
+      </div>`;
+    }
+
+    function numberFractionQuestion(index) {
+      const denominator = rand(2, 6);
+      const numerator = rand(1, denominator - 1);
+
+      return `
+      <div class="q">
+        <div class="q-title">${index}. Write this fraction in words</div>
+        <div class="shape"><strong>${numerator}/${denominator}</strong></div>
+        <div class="answer">Answer: ______</div>
+      </div>`;
+    }
+
+    function generate() {
+      const grid = document.getElementById('grid');
+      const builders = [
+        shadedFractionQuestion,
+        shadedFractionQuestion,
+        shadedFractionQuestion,
+        shadedFractionQuestion,
+        shadedFractionQuestion,
+        shadedFractionQuestion,
+        shadedFractionQuestion,
+        shadedFractionQuestion,
+        wordFractionQuestion,
+        wordFractionQuestion,
+        wordFractionQuestion,
+        commonFractionNameQuestion,
+        commonFractionNameQuestion,
+        numberFractionQuestion,
+        numberFractionQuestion,
+        numberFractionQuestion,
+        numberFractionQuestion
+      ];
+
+      grid.innerHTML = shuffle(builders).map(function (builder, index) {
+        return builder(index + 1);
+      }).join('');
+    }
+
+    generate();
+  </script>
+</body>
+</html>
