@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Capitals Millionaire</title>
+  <style>
+    :root {
+      --night: #0a1730;
+      --midnight: #17335e;
+      --gold: #ffd166;
+      --cyan: #7bdff2;
+      --mint: #b8f2e6;
+      --ink: #f7fbff;
+      --muted: #c4d8ef;
+      --panel: rgba(8, 20, 39, 0.86);
+      --shadow: 0 24px 60px rgba(0, 0, 0, 0.34);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Avenir Next", "Trebuchet MS", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top, rgba(123, 223, 242, 0.2), transparent 30%),
+        radial-gradient(circle at 20% 85%, rgba(255, 209, 102, 0.18), transparent 25%),
+        linear-gradient(180deg, #0a1730 0%, #17335e 60%, #0a1730 100%);
+      padding: 20px 14px 34px;
+    }
+
+    .shell {
+      max-width: 1220px;
+      margin: 0 auto;
+    }
+
+    .game {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 16px;
+      background: linear-gradient(180deg, rgba(20, 41, 75, 0.88), rgba(7, 16, 32, 0.94));
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 26px;
+      box-shadow: var(--shadow);
+      padding: 16px;
+      backdrop-filter: blur(10px);
+    }
+
+    .stage {
+      padding: 12px;
+      border-radius: 22px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: linear-gradient(180deg, rgba(8, 20, 39, 0.66), rgba(7, 16, 32, 0.88));
+    }
+
+    .top {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .pill {
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-weight: 800;
+      color: var(--cyan);
+      background: rgba(123, 223, 242, 0.1);
+    }
+
+    .question-box {
+      border-radius: 22px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: var(--panel);
+      padding: 20px;
+      min-height: 350px;
+    }
+
+    .category {
+      margin: 0 0 10px;
+      color: var(--gold);
+      text-transform: uppercase;
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      font-weight: 800;
+    }
+
+    .question {
+      margin: 0;
+      font-size: clamp(1.5rem, 3vw, 2.3rem);
+      line-height: 1.2;
+    }
+
+    .answers {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .answer {
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(19, 41, 75, 0.95), rgba(8, 20, 39, 0.95));
+      color: var(--ink);
+      font: inherit;
+      text-align: left;
+      padding: 14px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      cursor: pointer;
+      transition: transform 150ms ease, border-color 150ms ease;
+    }
+
+    .answer:hover,
+    .answer:focus-visible {
+      transform: translateY(-2px);
+      border-color: rgba(255, 209, 102, 0.9);
+      outline: none;
+    }
+
+    .answer:disabled { cursor: default; }
+
+    .answer.correct {
+      border-color: rgba(184, 242, 230, 0.9);
+      background: linear-gradient(180deg, rgba(112, 224, 0, 0.3), rgba(30, 96, 25, 0.85));
+    }
+
+    .answer.wrong {
+      border-color: rgba(255, 107, 107, 0.9);
+      background: linear-gradient(180deg, rgba(255, 107, 107, 0.3), rgba(106, 21, 21, 0.85));
+    }
+
+    .letter {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: inline-grid;
+      place-items: center;
+      color: var(--gold);
+      background: rgba(255, 209, 102, 0.14);
+      font-weight: 900;
+      flex: 0 0 auto;
+    }
+
+    .side {
+      display: grid;
+      gap: 12px;
+      align-content: start;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.04));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .card h2,
+    .card h3 { margin: 0 0 8px; }
+
+    .status { color: var(--muted); line-height: 1.55; margin: 0; }
+
+    .ladder {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 6px;
+    }
+
+    .ladder li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 7px 10px;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .ladder li.safe { border-color: rgba(123, 223, 242, 0.4); }
+
+    .ladder li.active {
+      color: #05101f;
+      background: linear-gradient(135deg, var(--gold), #ffe7aa);
+      border-color: rgba(255, 255, 255, 0.45);
+      font-weight: 800;
+      transform: translateX(-6px);
+    }
+
+    .ladder li.cleared {
+      color: var(--mint);
+      background: rgba(112, 224, 0, 0.12);
+    }
+
+    .message {
+      min-height: 72px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 12px;
+      line-height: 1.55;
+      color: var(--ink);
+    }
+
+    .message.good { border-color: rgba(112, 224, 0, 0.45); }
+    .message.bad { border-color: rgba(255, 107, 107, 0.45); }
+
+    button.reset {
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--ink);
+      border-radius: 10px;
+      padding: 9px 12px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    @media (max-width: 980px) {
+      .game { grid-template-columns: 1fr; }
+      .answers { grid-template-columns: 1fr; }
+      .question-box { min-height: 0; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="game">
+      <div class="stage">
+        <div class="top">
+          <div class="pill" id="roundBadge">Question 1 of 15</div>
+          <div class="pill" id="winningsBadge">Current winnings: $0</div>
+        </div>
+
+        <div class="question-box">
+          <p class="category" id="category">Capitals Challenge</p>
+          <p class="question" id="question">Loading first capitals question...</p>
+          <div class="answers" id="answers"></div>
+        </div>
+      </div>
+
+      <aside class="side">
+        <div class="card">
+          <h2>Prize Ladder</h2>
+          <ol class="ladder" id="ladder"></ol>
+        </div>
+
+        <div class="card">
+          <h3 id="statusTitle">Question One</h3>
+          <p class="status" id="statusCopy">Answer each capitals question correctly to climb to the top prize.</p>
+          <p class="message" id="message">Pick one of the four options.</p>
+          <button class="reset" id="newGame" type="button">New Game</button>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const prizes = [
+      100, 200, 300, 500, 1000,
+      2000, 4000, 8000, 16000, 32000,
+      64000, 125000, 250000, 500000, 1000000
+    ];
+    const safeLevels = [5, 10];
+    const letters = ["A", "B", "C", "D"];
+
+    const capitalPairs = [
+      { country: "South Korea", capital: "Seoul" },
+      { country: "Japan", capital: "Tokyo" },
+      { country: "India", capital: "New Delhi" },
+      { country: "Thailand", capital: "Bangkok" },
+      { country: "Australia", capital: "Canberra" },
+      { country: "Canada", capital: "Ottawa" },
+      { country: "Brazil", capital: "Brasilia" },
+      { country: "Argentina", capital: "Buenos Aires" },
+      { country: "Egypt", capital: "Cairo" },
+      { country: "Kenya", capital: "Nairobi" },
+      { country: "France", capital: "Paris" },
+      { country: "Italy", capital: "Rome" },
+      { country: "Spain", capital: "Madrid" },
+      { country: "Germany", capital: "Berlin" },
+      { country: "Portugal", capital: "Lisbon" },
+      { country: "United Kingdom", capital: "London" },
+      { country: "United States", capital: "Washington, D.C." },
+      { country: "Mexico", capital: "Mexico City" },
+      { country: "China", capital: "Beijing" },
+      { country: "Indonesia", capital: "Jakarta" },
+      { country: "Malaysia", capital: "Kuala Lumpur" },
+      { country: "Vietnam", capital: "Hanoi" },
+      { country: "Saudi Arabia", capital: "Riyadh" },
+      { country: "Turkey", capital: "Ankara" },
+      { country: "Russia", capital: "Moscow" },
+      { country: "Norway", capital: "Oslo" },
+      { country: "Sweden", capital: "Stockholm" },
+      { country: "Finland", capital: "Helsinki" },
+      { country: "Poland", capital: "Warsaw" },
+      { country: "Greece", capital: "Athens" },
+      { country: "Netherlands", capital: "Amsterdam" },
+      { country: "Belgium", capital: "Brussels" },
+      { country: "Switzerland", capital: "Bern" },
+      { country: "Austria", capital: "Vienna" },
+      { country: "Ireland", capital: "Dublin" },
+      { country: "New Zealand", capital: "Wellington" }
+    ];
+
+    let game;
+
+    function rand(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function shuffle(items) {
+      const copy = items.slice();
+
+      for (let index = copy.length - 1; index > 0; index -= 1) {
+        const swapIndex = rand(0, index);
+        [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
+      }
+
+      return copy;
+    }
+
+    function money(value) {
+      return "$" + value.toLocaleString("en-US");
+    }
+
+    function choicesWithCorrect(correct, pool) {
+      const set = new Set([correct]);
+
+      while (set.size < 4) {
+        set.add(pool[rand(0, pool.length - 1)]);
+      }
+
+      return shuffle(Array.from(set));
+    }
+
+    function buildQuestion(pair, direction) {
+      if (direction === "capital-to-country") {
+        const countries = capitalPairs.map(function (item) { return item.country; });
+        return {
+          category: "Capital -> Country",
+          prompt: pair.capital + " is the capital of which country?",
+          correct: pair.country,
+          choices: choicesWithCorrect(pair.country, countries)
+        };
+      }
+
+      const capitals = capitalPairs.map(function (item) { return item.capital; });
+      return {
+        category: "Country -> Capital",
+        prompt: "What is the capital of " + pair.country + "?",
+        correct: pair.capital,
+        choices: choicesWithCorrect(pair.capital, capitals)
+      };
+    }
+
+    function buildDeck() {
+      const selected = shuffle(capitalPairs).slice(0, 15);
+      return selected.map(function (pair, index) {
+        const direction = index % 2 === 0 ? "capital-to-country" : "country-to-capital";
+        return buildQuestion(pair, direction);
+      });
+    }
+
+    function fallback(round) {
+      if (round >= 10) return prizes[9];
+      if (round >= 5) return prizes[4];
+      return 0;
+    }
+
+    function newState() {
+      return {
+        round: 0,
+        winnings: 0,
+        complete: false,
+        locked: false,
+        deck: buildDeck()
+      };
+    }
+
+    function renderLadder() {
+      const ladder = document.getElementById("ladder");
+      ladder.innerHTML = prizes.slice().reverse().map(function (prize, reverseIndex) {
+        const level = prizes.length - reverseIndex;
+        const classes = [];
+
+        if (safeLevels.includes(level)) classes.push("safe");
+        if (game.round === level && !game.complete) classes.push("active");
+        if (level < game.round || (game.complete && game.round >= level)) classes.push("cleared");
+
+        return "<li class=\"" + classes.join(" ") + "\"><span>" + level + "</span><span>" + money(prize) + "</span></li>";
+      }).join("");
+    }
+
+    function render() {
+      const roundBadge = document.getElementById("roundBadge");
+      const winningsBadge = document.getElementById("winningsBadge");
+      const category = document.getElementById("category");
+      const question = document.getElementById("question");
+      const answers = document.getElementById("answers");
+      const message = document.getElementById("message");
+
+      renderLadder();
+      winningsBadge.textContent = "Current winnings: " + money(game.winnings);
+
+      if (game.complete) {
+        roundBadge.textContent = "Game complete";
+        category.textContent = "Champion";
+        question.textContent = "You reached the top prize.";
+        answers.innerHTML = "";
+        message.className = "message good";
+        message.textContent = "You are the capitals millionaire. Start a new game to play again.";
+        return;
+      }
+
+      const q = game.deck[game.round];
+      roundBadge.textContent = "Question " + (game.round + 1) + " of " + game.deck.length;
+      category.textContent = q.category;
+      question.textContent = q.prompt;
+      answers.innerHTML = q.choices.map(function (choice, index) {
+        return "<button class=\"answer\" type=\"button\" data-choice=\"" + choice + "\"><span class=\"letter\">" + letters[index] + "</span><span>" + choice + "</span></button>";
+      }).join("");
+
+      message.className = "message";
+      message.textContent = "Pick one of the four options.";
+
+      answers.querySelectorAll(".answer").forEach(function (button) {
+        button.addEventListener("click", function () {
+          submit(button.dataset.choice, button);
+        });
+      });
+    }
+
+    function markCorrect(correct) {
+      document.querySelectorAll(".answer").forEach(function (button) {
+        if (button.dataset.choice === correct) {
+          button.classList.add("correct");
+        }
+      });
+    }
+
+    function disableAnswers() {
+      document.querySelectorAll(".answer").forEach(function (button) {
+        button.disabled = true;
+      });
+    }
+
+    function submit(choice, button) {
+      if (game.locked || game.complete) return;
+
+      game.locked = true;
+      disableAnswers();
+
+      const q = game.deck[game.round];
+      const statusTitle = document.getElementById("statusTitle");
+      const statusCopy = document.getElementById("statusCopy");
+      const message = document.getElementById("message");
+
+      if (choice === q.correct) {
+        button.classList.add("correct");
+        game.winnings = prizes[game.round];
+        game.round += 1;
+
+        if (game.round >= game.deck.length) {
+          game.complete = true;
+          statusTitle.textContent = "Capitals Millionaire";
+          statusCopy.textContent = "You answered every capitals question correctly and reached the top prize.";
+          render();
+          game.locked = false;
+          return;
+        }
+
+        statusTitle.textContent = "Still Climbing";
+        statusCopy.textContent = "Correct answer. You moved one step higher on the prize ladder.";
+        message.className = "message good";
+        message.textContent = "Correct. You climb to " + money(game.winnings) + ".";
+
+        window.setTimeout(function () {
+          game.locked = false;
+          render();
+        }, 900);
+        return;
+      }
+
+      button.classList.add("wrong");
+      markCorrect(q.correct);
+      game.winnings = fallback(game.round);
+      game.complete = true;
+      statusTitle.textContent = "Game Over";
+      statusCopy.textContent = "Wrong answer. You dropped to the last safe level reached.";
+      message.className = "message bad";
+      message.textContent = "The correct answer was " + q.correct + ". You leave with " + money(game.winnings) + ".";
+      renderLadder();
+      document.getElementById("winningsBadge").textContent = "Current winnings: " + money(game.winnings);
+      game.locked = false;
+    }
+
+    function startGame() {
+      game = newState();
+      document.getElementById("statusTitle").textContent = "Question One";
+      document.getElementById("statusCopy").textContent = "Answer each capitals question correctly to climb to the top prize.";
+      render();
+    }
+
+    document.getElementById("newGame").addEventListener("click", startGame);
+    startGame();
+  </script>
+</body>
+</html>
