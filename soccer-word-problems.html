@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Soccer Star Word Problems</title>
+  <style>
+    :root {
+      --grass-dark: #075c36;
+      --grass: #0f8a50;
+      --grass-light: #dff7e9;
+      --lime: #c9f33a;
+      --navy: #10243e;
+      --white: #ffffff;
+      --muted: #5c6b7a;
+      --line: rgba(15, 138, 80, 0.2);
+      --correct: #087443;
+      --incorrect: #b42318;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 20px;
+      font-family: "Trebuchet MS", Arial, sans-serif;
+      color: var(--navy);
+      background:
+        radial-gradient(circle at 12% 10%, rgba(201, 243, 58, 0.22), transparent 20%),
+        linear-gradient(135deg, #052f21, #087443 55%, #0a5937);
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      overflow: hidden;
+      background: var(--white);
+      border-radius: 24px;
+      box-shadow: 0 24px 60px rgba(0, 21, 13, 0.35);
+    }
+
+    .hero {
+      position: relative;
+      padding: 26px 28px 24px;
+      color: var(--white);
+      background:
+        linear-gradient(90deg, transparent 49.7%, rgba(255, 255, 255, 0.3) 49.7%, rgba(255, 255, 255, 0.3) 50.3%, transparent 50.3%),
+        repeating-linear-gradient(90deg, var(--grass-dark) 0, var(--grass-dark) 12.5%, var(--grass) 12.5%, var(--grass) 25%);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: 8%;
+      top: 50%;
+      width: 112px;
+      height: 112px;
+      border: 3px solid rgba(255, 255, 255, 0.28);
+      border-radius: 50%;
+      transform: translateY(-50%);
+    }
+
+    .eyebrow {
+      position: relative;
+      z-index: 1;
+      display: inline-block;
+      margin-bottom: 8px;
+      padding: 6px 10px;
+      color: var(--navy);
+      background: var(--lime);
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      position: relative;
+      z-index: 1;
+      max-width: 760px;
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .subtitle {
+      position: relative;
+      z-index: 1;
+      max-width: 700px;
+      margin: 10px 0 0;
+      color: rgba(255, 255, 255, 0.9);
+      line-height: 1.5;
+    }
+
+    .content {
+      padding: 20px;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .round-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      min-height: 42px;
+      padding: 9px 14px;
+      border: 0;
+      border-radius: 10px;
+      color: var(--white);
+      background: var(--grass-dark);
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 150ms ease, box-shadow 150ms ease;
+    }
+
+    button.secondary {
+      color: var(--grass-dark);
+      background: var(--grass-light);
+    }
+
+    button:hover,
+    button:focus-visible {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(7, 92, 54, 0.18);
+      outline: 3px solid rgba(201, 243, 58, 0.65);
+      outline-offset: 2px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .question {
+      position: relative;
+      padding: 16px;
+      border: 1px solid #d8e8df;
+      border-radius: 16px;
+      background: linear-gradient(180deg, var(--grass-light), #ffffff 38%);
+      break-inside: avoid;
+    }
+
+    .player-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .jersey {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      flex: 0 0 auto;
+      color: var(--white);
+      background: var(--grass-dark);
+      border-radius: 12px 12px 16px 16px;
+      box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.12);
+      font-size: 0.78rem;
+      font-weight: 900;
+    }
+
+    .question-number {
+      display: block;
+      color: var(--grass-dark);
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .player-name {
+      display: block;
+      margin-top: 2px;
+      font-size: 1.05rem;
+    }
+
+    .prompt {
+      min-height: 78px;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      font-size: 1rem;
+      line-height: 1.55;
+    }
+
+    .answer-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-top: 13px;
+    }
+
+    .answer-row label {
+      font-size: 0.88rem;
+      font-weight: 800;
+    }
+
+    .answer-input {
+      width: 94px;
+      min-height: 40px;
+      padding: 7px 9px;
+      border: 2px solid #b8cfc1;
+      border-radius: 9px;
+      color: var(--navy);
+      background: var(--white);
+      font: inherit;
+      font-weight: 800;
+    }
+
+    .answer-input:focus {
+      border-color: var(--grass);
+      outline: 3px solid rgba(15, 138, 80, 0.16);
+    }
+
+    .result {
+      min-height: 20px;
+      font-size: 0.85rem;
+      font-weight: 800;
+    }
+
+    .result.correct {
+      color: var(--correct);
+    }
+
+    .result.incorrect {
+      color: var(--incorrect);
+    }
+
+    .work-area {
+      display: none;
+      height: 64px;
+      margin-top: 8px;
+      background-image: repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 21px,
+        var(--line) 21px,
+        var(--line) 22px
+      );
+    }
+
+    .answer-key {
+      display: none;
+      margin-top: 18px;
+      padding: 16px;
+      border: 2px dashed var(--grass);
+      border-radius: 14px;
+      background: var(--grass-light);
+    }
+
+    .answer-key.visible {
+      display: block;
+    }
+
+    .answer-key h2 {
+      margin: 0 0 8px;
+      font-size: 1.1rem;
+    }
+
+    .answer-key p {
+      margin: 0;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 760px) {
+      body {
+        padding: 0;
+      }
+
+      .container {
+        border-radius: 0;
+      }
+
+      .hero {
+        padding: 24px 20px;
+      }
+
+      .hero::after {
+        display: none;
+      }
+
+      .content {
+        padding: 14px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .prompt {
+        min-height: 0;
+      }
+    }
+
+    @page {
+      margin: 0.45in;
+    }
+
+    @media print {
+      body {
+        padding: 0;
+        background: white;
+      }
+
+      .container {
+        max-width: none;
+        box-shadow: none;
+      }
+
+      .hero {
+        padding: 13px 18px;
+        background: var(--grass-dark);
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .hero::after,
+      .toolbar,
+      .answer-row {
+        display: none;
+      }
+
+      h1 {
+        font-size: 21pt;
+      }
+
+      .subtitle {
+        margin-top: 4px;
+        font-size: 9pt;
+      }
+
+      .content {
+        padding: 12px 0 0;
+      }
+
+      .grid {
+        gap: 8px;
+      }
+
+      .question {
+        padding: 10px;
+      }
+
+      .player-row {
+        margin-bottom: 5px;
+      }
+
+      .jersey {
+        width: 30px;
+        height: 30px;
+        font-size: 7pt;
+      }
+
+      .prompt {
+        min-height: 54px;
+        font-size: 9pt;
+      }
+
+      .work-area {
+        display: block;
+      }
+
+      .answer-key {
+        font-size: 9pt;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <header class="hero">
+      <span class="eyebrow">Math Champions League</span>
+      <h1>Soccer Star Word Problems</h1>
+      <p class="subtitle">Solve 10 soccer stories featuring 10 of the game's biggest stars. A new round mixes addition, subtraction, multiplication, and division.</p>
+    </header>
+
+    <section class="content" aria-label="Soccer math worksheet">
+      <div class="toolbar">
+        <p class="round-note">One player. One problem. Ten chances to score.</p>
+        <div class="actions">
+          <button type="button" class="secondary" id="answerKeyButton">Show Answer Key</button>
+          <button type="button" class="secondary" onclick="window.print()">Print Worksheet</button>
+          <button type="button" id="newQuestionsButton">New Questions</button>
+        </div>
+      </div>
+
+      <div class="grid" id="grid"></div>
+      <aside class="answer-key" id="answerKey" aria-live="polite"></aside>
+    </section>
+  </main>
+
+  <script>
+    const players = [
+      { name: "Lionel Messi", initials: "LM" },
+      { name: "Cristiano Ronaldo", initials: "CR" },
+      { name: "Kylian Mbappe", initials: "KM" },
+      { name: "Erling Haaland", initials: "EH" },
+      { name: "Vinicius Junior", initials: "VJ" },
+      { name: "Mohamed Salah", initials: "MS" },
+      { name: "Jude Bellingham", initials: "JB" },
+      { name: "Kevin De Bruyne", initials: "KD" },
+      { name: "Rodri", initials: "RO" },
+      { name: "Harry Kane", initials: "HK" }
+    ];
+
+    let currentQuestions = [];
+
+    function rand(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function shuffle(items) {
+      const copy = items.slice();
+
+      for (let index = copy.length - 1; index > 0; index -= 1) {
+        const swapIndex = rand(0, index);
+        [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
+      }
+
+      return copy;
+    }
+
+    function additionProblem(player) {
+      const firstHalf = rand(3, 14);
+      const secondHalf = rand(2, 10);
+      return {
+        player,
+        prompt: `${player.name} completed ${firstHalf} passes in the first half and ${secondHalf} passes in the second half. How many passes did he complete altogether?`,
+        answer: firstHalf + secondHalf
+      };
+    }
+
+    function subtractionProblem(player) {
+      const attempts = rand(12, 25);
+      const blocked = rand(3, attempts - 4);
+      return {
+        player,
+        prompt: `${player.name} took ${attempts} shots during practice. The goalkeeper blocked ${blocked}. How many shots were not blocked?`,
+        answer: attempts - blocked
+      };
+    }
+
+    function multiplicationProblem(player) {
+      const games = rand(3, 8);
+      const points = rand(2, 5);
+      return {
+        player,
+        prompt: `${player.name}'s team earned ${points} points in each of ${games} tournament games. How many points did the team earn in all?`,
+        answer: games * points
+      };
+    }
+
+    function divisionProblem(player) {
+      const groups = rand(2, 8);
+      const each = rand(2, 9);
+      const total = groups * each;
+      return {
+        player,
+        prompt: `${player.name} has ${total} soccer balls to share equally among ${groups} training groups. How many balls will each group get?`,
+        answer: each
+      };
+    }
+
+    const problemBuilders = [
+      additionProblem,
+      subtractionProblem,
+      multiplicationProblem,
+      divisionProblem,
+      additionProblem,
+      subtractionProblem,
+      multiplicationProblem,
+      divisionProblem,
+      additionProblem,
+      subtractionProblem
+    ];
+
+    function questionMarkup(question, index) {
+      return `
+        <article class="question">
+          <div class="player-row">
+            <span class="jersey" aria-hidden="true">${question.player.initials}</span>
+            <div>
+              <span class="question-number">Question ${index + 1}</span>
+              <strong class="player-name">${question.player.name}</strong>
+            </div>
+          </div>
+          <p class="prompt">${question.prompt}</p>
+          <div class="answer-row">
+            <label for="answer-${index}">Answer</label>
+            <input class="answer-input" id="answer-${index}" type="number" inputmode="numeric" aria-describedby="result-${index}" />
+            <span class="result" id="result-${index}" aria-live="polite"></span>
+          </div>
+          <div class="work-area" aria-hidden="true"></div>
+        </article>
+      `;
+    }
+
+    function checkAnswer(index) {
+      const input = document.getElementById(`answer-${index}`);
+      const result = document.getElementById(`result-${index}`);
+
+      if (input.value === "") {
+        result.textContent = "";
+        result.className = "result";
+        return;
+      }
+
+      const isCorrect = Number(input.value) === currentQuestions[index].answer;
+      result.textContent = isCorrect ? "Goal! Correct" : "Try another shot";
+      result.className = `result ${isCorrect ? "correct" : "incorrect"}`;
+    }
+
+    function renderAnswerKey() {
+      const answerKey = document.getElementById("answerKey");
+      const answers = currentQuestions.map(function (question, index) {
+        return `<strong>${index + 1}.</strong> ${question.answer}`;
+      });
+      answerKey.innerHTML = `<h2>Coach's Answer Key</h2><p>${answers.join(" &nbsp; | &nbsp; ")}</p>`;
+    }
+
+    function generate() {
+      const shuffledPlayers = shuffle(players);
+      const shuffledBuilders = shuffle(problemBuilders);
+
+      currentQuestions = shuffledPlayers.map(function (player, index) {
+        return shuffledBuilders[index](player);
+      });
+
+      document.getElementById("grid").innerHTML = currentQuestions.map(questionMarkup).join("");
+      document.querySelectorAll(".answer-input").forEach(function (input, index) {
+        input.addEventListener("input", function () {
+          checkAnswer(index);
+        });
+      });
+
+      const answerKey = document.getElementById("answerKey");
+      const answerKeyButton = document.getElementById("answerKeyButton");
+      answerKey.classList.remove("visible");
+      answerKeyButton.textContent = "Show Answer Key";
+      answerKeyButton.setAttribute("aria-expanded", "false");
+      renderAnswerKey();
+    }
+
+    document.getElementById("newQuestionsButton").addEventListener("click", generate);
+    document.getElementById("answerKeyButton").addEventListener("click", function () {
+      const answerKey = document.getElementById("answerKey");
+      const isVisible = answerKey.classList.toggle("visible");
+      this.textContent = isVisible ? "Hide Answer Key" : "Show Answer Key";
+      this.setAttribute("aria-expanded", String(isVisible));
+    });
+
+    generate();
+  </script>
+</body>
+</html>
