@@ -52,7 +52,7 @@
 <body>
   <div class="container">
     <h1>Easy Long Division</h1>
-    <p class="subtitle">16 exact-division questions using 2, 3, 4, and 5. Each one divides cleanly with no remainders.</p>
+    <p class="subtitle">24 exact-division questions using 2, 3, 4, and 5, including easy carryovers. Each one finishes with no remainder.</p>
     <button onclick="generate()">New Questions</button>
     <div class="grid" id="grid"></div>
   </div>
@@ -75,22 +75,16 @@
       const bank = [];
 
       divisors.forEach(function (divisor) {
-        const firstDigits = [];
-        const secondDigits = [0];
+        for (let dividend = 10; dividend <= 99; dividend++) {
+          const firstDigit = Math.floor(dividend / 10);
 
-        for (let digit = divisor; digit <= 9; digit += divisor) {
-          firstDigits.push(digit);
-          secondDigits.push(digit);
-        }
-
-        firstDigits.forEach(function (firstDigit) {
-          secondDigits.forEach(function (secondDigit) {
+          if (firstDigit >= divisor && dividend % divisor === 0) {
             bank.push({
               divisor: divisor,
-              dividend: firstDigit * 10 + secondDigit
+              dividend: dividend
             });
-          });
-        });
+          }
+        }
       });
 
       return bank;
