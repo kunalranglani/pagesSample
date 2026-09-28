@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Factors Practice</title>
+  <style>
+    :root {
+      --purple: #5b3cc4;
+      --purple-dark: #35206f;
+      --lavender: #eee9ff;
+      --yellow: #ffd966;
+      --ink: #241f35;
+      --muted: #655f75;
+      --paper: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 20px;
+      font-family: "Trebuchet MS", Arial, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 10% 8%, rgba(255, 217, 102, 0.45), transparent 18%),
+        linear-gradient(145deg, #4d32a6, #7660cf);
+    }
+
+    .container {
+      max-width: 1040px;
+      margin: auto;
+      overflow: hidden;
+      background: var(--paper);
+      border-radius: 24px;
+      box-shadow: 0 24px 60px rgba(31, 17, 72, 0.3);
+    }
+
+    header {
+      padding: 24px 28px;
+      color: white;
+      background:
+        radial-gradient(circle at 88% 28%, rgba(255, 217, 102, 0.25), transparent 15%),
+        var(--purple-dark);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      color: var(--purple-dark);
+      background: var(--yellow);
+      font-size: 0.76rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .subtitle {
+      max-width: 700px;
+      margin: 10px 0 0;
+      color: rgba(255, 255, 255, 0.86);
+      line-height: 1.5;
+    }
+
+    .content {
+      padding: 20px;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .directions {
+      margin: 0;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    button {
+      min-height: 42px;
+      padding: 9px 14px;
+      border: 0;
+      border-radius: 10px;
+      color: white;
+      background: var(--purple);
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      color: var(--purple-dark);
+      background: var(--lavender);
+    }
+
+    button:hover,
+    button:focus-visible {
+      outline: 3px solid rgba(255, 217, 102, 0.75);
+      outline-offset: 2px;
+    }
+
+    .questions {
+      display: grid;
+      gap: 14px;
+    }
+
+    .question {
+      padding: 18px 20px 20px;
+      border: 2px solid #ddd5f5;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #faf9ff, #ffffff);
+      break-inside: avoid;
+    }
+
+    .prompt {
+      margin: 0 0 16px;
+      font-size: 1.1rem;
+      font-weight: 800;
+    }
+
+    .number {
+      display: inline-grid;
+      min-width: 58px;
+      height: 44px;
+      margin-left: 5px;
+      padding: 0 10px;
+      place-items: center;
+      border-radius: 11px;
+      color: white;
+      background: var(--purple);
+      font-size: 1.45rem;
+    }
+
+    .factor-pairs {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .box-group {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .factor-box {
+      width: 58px;
+      height: 58px;
+      flex: 0 0 58px;
+      padding: 4px;
+      border: 3px solid var(--purple-dark);
+      border-radius: 8px;
+      color: var(--ink);
+      background: white;
+      font: inherit;
+      font-size: 1.35rem;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .factor-box:focus {
+      border-color: var(--purple);
+      outline: 4px solid rgba(255, 217, 102, 0.6);
+      outline-offset: 2px;
+    }
+
+    .divider {
+      width: 3px;
+      height: 56px;
+      flex: 0 0 3px;
+      border-radius: 999px;
+      background: var(--yellow);
+    }
+
+    @media (max-width: 700px) {
+      body {
+        padding: 0;
+      }
+
+      .container {
+        border-radius: 0;
+      }
+
+      header,
+      .content {
+        padding: 20px 16px;
+      }
+
+      .question {
+        padding: 16px 12px 18px;
+      }
+
+      .factor-pairs {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .box-group {
+        gap: 7px;
+      }
+
+      .factor-box {
+        width: clamp(38px, 11vw, 50px);
+        height: clamp(38px, 11vw, 50px);
+        flex-basis: clamp(38px, 11vw, 50px);
+        border-width: 2px;
+      }
+
+      .divider {
+        width: min(280px, 85%);
+        height: 3px;
+        flex-basis: 3px;
+      }
+    }
+
+    @page {
+      margin: 0.4in 0.45in;
+    }
+
+    @media print {
+      body {
+        padding: 0;
+        background: white;
+      }
+
+      .container {
+        max-width: none;
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      header {
+        padding: 0 0 10px;
+        color: var(--ink);
+        background: white;
+      }
+
+      .eyebrow,
+      .subtitle,
+      .toolbar {
+        display: none;
+      }
+
+      h1 {
+        font-size: 20pt;
+      }
+
+      .content {
+        padding: 0;
+      }
+
+      .questions {
+        gap: 8px;
+      }
+
+      .question {
+        padding: 10px 14px 12px;
+        border-color: #999;
+        border-radius: 10px;
+      }
+
+      .prompt {
+        margin-bottom: 8px;
+        font-size: 11pt;
+      }
+
+      .number {
+        min-width: 45px;
+        height: 31px;
+        color: var(--ink);
+        background: white;
+        border: 2px solid var(--ink);
+        font-size: 14pt;
+      }
+
+      .factor-box {
+        width: 46px;
+        height: 46px;
+        flex-basis: 46px;
+        border-width: 2px;
+      }
+
+      .divider {
+        height: 44px;
+        background: var(--ink);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <header>
+      <span class="eyebrow">Factor Pairs</span>
+      <h1>Factors Practice</h1>
+      <p class="subtitle">Write every factor in the blank boxes. Match each factor on the left with its partner on the right.</p>
+    </header>
+
+    <section class="content" aria-label="Factors worksheet">
+      <div class="toolbar">
+        <p class="directions">Fill in every box. No answers are shown.</p>
+        <div class="actions">
+          <button type="button" class="secondary" onclick="window.print()">Print Worksheet</button>
+          <button type="button" id="newQuestionsButton">New Questions</button>
+        </div>
+      </div>
+
+      <div class="questions" id="questions"></div>
+    </section>
+  </main>
+
+  <script>
+    const practiceNumbers = [
+      12, 15, 16, 18, 20, 21, 24, 27, 28, 30,
+      32, 36, 40, 42, 45, 48, 50, 54, 56, 63,
+      64, 70, 72, 75, 80, 81, 84, 90, 96, 100
+    ];
+
+    function shuffle(items) {
+      const copy = items.slice();
+
+      for (let index = copy.length - 1; index > 0; index -= 1) {
+        const swapIndex = Math.floor(Math.random() * (index + 1));
+        [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
+      }
+
+      return copy;
+    }
+
+    function factorPairCount(number) {
+      let count = 0;
+
+      for (let candidate = 1; candidate <= Math.sqrt(number); candidate += 1) {
+        if (number % candidate === 0) {
+          count += 1;
+        }
+      }
+
+      return count;
+    }
+
+    function blankBoxes(count, questionIndex, side) {
+      return Array.from({ length: count }, function (_, boxIndex) {
+        return `
+          <input
+            class="factor-box"
+            type="text"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            maxlength="3"
+            autocomplete="off"
+            aria-label="Question ${questionIndex + 1}, ${side} factor box ${boxIndex + 1}"
+          />`;
+      }).join("");
+    }
+
+    function questionMarkup(number, index) {
+      const boxCount = factorPairCount(number);
+      const leftBoxes = blankBoxes(boxCount, index, "left");
+      const rightBoxes = blankBoxes(boxCount, index, "right");
+
+      return `
+        <article class="question">
+          <p class="prompt">${index + 1}. Find all factors of <strong class="number">${number}</strong></p>
+          <div class="factor-pairs" aria-label="${boxCount} blank factor pairs to fill in">
+            <div class="box-group">${leftBoxes}</div>
+            <span class="divider" aria-hidden="true"></span>
+            <div class="box-group">${rightBoxes}</div>
+          </div>
+        </article>
+      `;
+    }
+
+    function generate() {
+      const numbers = shuffle(practiceNumbers).slice(0, 8);
+      document.getElementById("questions").innerHTML = numbers.map(questionMarkup).join("");
+    }
+
+    document.getElementById("newQuestionsButton").addEventListener("click", generate);
+    generate();
+  </script>
+</body>
+</html>
