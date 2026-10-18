@@ -237,12 +237,14 @@
     }
 
     @page {
+      size: portrait;
       margin: 0.4in 0.45in;
     }
 
     @media print {
       body {
         padding: 0;
+        min-height: 0;
         background: white;
       }
 
@@ -273,38 +275,51 @@
       }
 
       .questions {
-        gap: 8px;
+        gap: 6px;
       }
 
       .question {
-        padding: 10px 14px 12px;
+        padding: 7px 10px;
         border-color: #999;
         border-radius: 10px;
       }
 
       .prompt {
-        margin-bottom: 8px;
+        margin-bottom: 6px;
         font-size: 11pt;
       }
 
       .number {
         min-width: 45px;
-        height: 31px;
+        height: 26px;
         color: var(--ink);
         background: white;
         border: 2px solid var(--ink);
         font-size: 14pt;
       }
 
+      .factor-pairs {
+        flex-direction: row;
+        gap: 12px;
+      }
+
+      .box-group {
+        gap: 6px;
+      }
+
       .factor-box {
-        width: 46px;
-        height: 46px;
-        flex-basis: 46px;
+        width: 36px;
+        height: 36px;
+        flex-basis: 36px;
         border-width: 2px;
+        border-radius: 5px;
+        font-size: 12pt;
       }
 
       .divider {
-        height: 44px;
+        width: 2px;
+        height: 34px;
+        flex-basis: 2px;
         background: var(--ink);
       }
     }
@@ -315,7 +330,7 @@
     <header>
       <span class="eyebrow">Factor Pairs</span>
       <h1>Factors Practice</h1>
-      <p class="subtitle">Write every factor in the blank boxes. Match each factor on the left with its partner on the right.</p>
+      <p class="subtitle">10 questions: write every factor in the blank boxes. Match each factor on the left with its partner on the right.</p>
     </header>
 
     <section class="content" aria-label="Factors worksheet">
@@ -394,7 +409,7 @@
     }
 
     function generate() {
-      const numbers = shuffle(practiceNumbers).slice(0, 8);
+      const numbers = shuffle(practiceNumbers).slice(0, 10);
       document.getElementById("questions").innerHTML = numbers.map(questionMarkup).join("");
     }
 

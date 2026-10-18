@@ -25,15 +25,15 @@
       background-image: linear-gradient(to bottom, transparent 17px, rgba(99, 102, 241, 0.16) 17px, rgba(99, 102, 241, 0.16) 18px, transparent 18px, transparent 35px, rgba(99, 102, 241, 0.16) 35px, rgba(99, 102, 241, 0.16) 36px, transparent 36px);
     }
 
-    @page { margin: 0.5in 0.5in 0.35in; }
+    @page { size: portrait; margin: 0.4in; }
 
     @media print {
       body { background:white; padding:0; margin:0; }
-      .container { max-width:none; padding:0.12in 0.2in 0; border-radius:0; box-shadow:none; }
+      .container { max-width:none; padding:0; border-radius:0; box-shadow:none; }
       h1,
       .subtitle,
       button { display:none; }
-      .grid { gap:6px; }
+      .grid { grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; }
       .q { padding:6px; border-radius:6px; border-color:#bbb; }
       .q-title { margin-bottom:5px; font-size:10pt; }
       .long-division { width:90px; }
@@ -41,10 +41,10 @@
       .division-row { font-size:21px; }
       .divisor { width:20px; padding-right:5px; }
       .dividend { min-width:46px; padding-left:6px; }
-      .work-area { height:42px; margin-top:6px; }
+      .work-area { height:54px; margin-top:6px; }
     }
 
-    @media (max-width: 800px) {
+    @media screen and (max-width: 800px) {
       .grid { grid-template-columns:repeat(2, minmax(0, 1fr)); }
     }
   </style>
@@ -52,7 +52,7 @@
 <body>
   <div class="container">
     <h1>Easy Long Division</h1>
-    <p class="subtitle">16 exact-division questions using 2, 3, 4, and 5. Each one divides cleanly with no remainders.</p>
+    <p class="subtitle">24 exact-division questions using 2, 3, 4, and 5. Each one divides cleanly with no remainders.</p>
     <button onclick="generate()">New Questions</button>
     <div class="grid" id="grid"></div>
   </div>
