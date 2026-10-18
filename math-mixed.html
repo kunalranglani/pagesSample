@@ -30,6 +30,41 @@
             .problem div {
                 margin-bottom: 5px;
             }
+
+        .long-division {
+            width: 100px;
+            margin: 20px;
+            margin-bottom: 50px;
+            font-size: 24px;
+        }
+
+        .quotient-line {
+            width: 54px;
+            height: 18px;
+            margin-left: 42px;
+            border-bottom: 2px solid #111;
+        }
+
+        .division-row {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            line-height: 1;
+        }
+
+        .divisor {
+            width: 24px;
+            padding-right: 6px;
+            text-align: right;
+        }
+
+        .dividend {
+            min-width: 54px;
+            padding: 2px 0 0 8px;
+            border-top: 2px solid #111;
+            border-left: 2px solid #111;
+            text-align: right;
+        }
     </style>
 </head>
 <body>
@@ -45,21 +80,16 @@
         }
 
         function generateQuestions() {
-            const container = document.getElementById('questions');
-            const operations = ['+', '-', '×', '/'];
+            const container = document.getElementById("problemsContainer");
+            const operations = ['+', '-', '×'];
 
-            for (let i = 0; i < 30; i++) {
+            for (let i = 0; i < 24; i++) {
                 const operation = operations[Math.floor(Math.random() * operations.length)];
                 let a, b;
 
                 if (operation === '×') {
                     a = getRandomIntInclusive(10, 99);
                     b = getRandomIntInclusive(2, 9);
-                }
-                else if (operation === '/') {
-                    b = getRandomIntInclusive(2, 10);
-                    const result = getRandomIntInclusive(1, 10);
-                    a = b * result; // ensures no remainder
                 }
                 else {
                     a = getRandomIntInclusive(100, 999);
@@ -76,8 +106,6 @@
                 }
 
 
-                let container = document.getElementById("problemsContainer");
-
                 let problemDiv = document.createElement("div");
                 problemDiv.className = "problem";
                 problemDiv.innerHTML = `
@@ -87,6 +115,30 @@
                     `;
                 container.appendChild(problemDiv);
             }
+
+                for (let i = 0; i < 6; i++) {
+                    const divisor = getRandomIntInclusive(2, 5);
+                    const quotient = getRandomIntInclusive(11, Math.floor(99 / divisor));
+                    const dividend = divisor * quotient;
+                    const problemDiv = document.createElement("div");
+                    problemDiv.className = "long-division";
+                    problemDiv.innerHTML = `
+                        <div class="quotient-line"></div>
+                        <div class="division-row">
+                            <div class="divisor">${divisor}</div>
+                            <div class="dividend">${dividend}</div>
+                        </div>
+                    `;
+                    container.appendChild(problemDiv);
+                }
+
+                const problems = Array.from(container.children);
+                problems.sort(function () {
+                    return Math.random() - 0.5;
+                });
+                problems.forEach(function (problem) {
+                    container.appendChild(problem);
+                });
         }
 
         generateQuestions();

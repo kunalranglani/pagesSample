@@ -75,22 +75,16 @@
       const bank = [];
 
       divisors.forEach(function (divisor) {
-        const firstDigits = [];
-        const secondDigits = [0];
+        for (let dividend = 10; dividend <= 99; dividend++) {
+          const firstDigit = Math.floor(dividend / 10);
 
-        for (let digit = divisor; digit <= 9; digit += divisor) {
-          firstDigits.push(digit);
-          secondDigits.push(digit);
-        }
-
-        firstDigits.forEach(function (firstDigit) {
-          secondDigits.forEach(function (secondDigit) {
+          if (firstDigit >= divisor && dividend % divisor === 0) {
             bank.push({
               divisor: divisor,
-              dividend: firstDigit * 10 + secondDigit
+              dividend: dividend
             });
-          });
-        });
+          }
+        }
       });
 
       return bank;
