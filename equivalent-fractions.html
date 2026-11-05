@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Equivalent Fractions - Grade 4</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin:0; padding:20px; font-family:"Trebuchet MS", Arial, sans-serif; color:#183153; background:linear-gradient(145deg, #bde9ff, #fff4cf); line-height:1.5; }
+    .container { max-width:1040px; margin:auto; background:white; border-radius:24px; overflow:hidden; box-shadow:0 18px 40px #18315320; }
+    header { padding:24px; background:#1d5fa7; color:white; }
+    header a { color:white; }
+    .eyebrow { margin:12px 0 4px; font-weight:700; color:#ffdf80; }
+    h1 { margin:0; font-size:clamp(1.8rem, 5vw, 3rem); line-height:1.2; }
+    header p:last-child { margin-bottom:0; }
+    .content { padding:24px; }
+    h2 { margin:0 0 10px; font-size:1.3rem; }
+    svg { display:block; width:100%; max-width:260px; height:auto; margin:6px auto; }
+    .toolbar { display:flex; gap:10px; flex-wrap:wrap; margin:14px 0; }
+    button { min-height:44px; padding:10px 14px; border:0; border-radius:10px; color:white; background:#1d5fa7; font:inherit; font-weight:700; cursor:pointer; }
+    button.secondary { background:#e8f2fc; color:#183153; }
+    button:hover { filter:brightness(0.94); }
+    a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible { outline:3px solid #b96900; outline-offset:3px; }
+    .directions { margin:0; }
+    #score { min-height:1.5em; margin:8px 0; font-weight:700; }
+    .grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:14px; }
+    .question { padding:16px; border:2px solid #d6e5f2; border-radius:14px; break-inside:avoid; }
+    .question h3 { margin:0 0 10px; font-size:1rem; }
+    .models { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .models p { margin:0; text-align:center; font-size:0.9rem; }
+    .equation { display:flex; align-items:center; justify-content:center; gap:14px; margin:12px 0; font-size:1.4rem; font-weight:700; }
+    .fraction { display:inline-flex; flex-direction:column; align-items:stretch; min-width:40px; text-align:center; vertical-align:middle; }
+    .fraction > :first-child { border-bottom:2px solid currentColor; }
+    .fraction > span { padding:0 5px; }
+    input { width:60px; height:40px; padding:4px; border:2px solid #1d5fa7; border-radius:6px; font:inherit; text-align:center; color:#183153; background:white; }
+    select { min-height:44px; width:100%; padding:8px; border:2px solid #1d5fa7; border-radius:8px; font:inherit; background:white; color:#183153; }
+    .feedback { margin:8px 0 0; font-weight:700; font-size:0.95rem; }
+    .feedback:empty { display:none; }
+    .correct { color:#166534; }
+    .retry { color:#9a3412; }
+    [aria-invalid="true"] { border-color:#9a3412; }
+    .answer-key { margin-top:22px; padding:18px; border:2px dashed #1d5fa7; border-radius:14px; }
+    .answer-key li { margin-bottom:8px; }
+    [hidden] { display:none !important; }
+    .print-details { display:none; }
+    @media (max-width:600px) {
+      body { padding:0; }
+      .container { border-radius:0; }
+      header, .content { padding:18px; }
+      .grid { grid-template-columns:1fr; }
+    }
+    @page { size:portrait; margin:0.4in; }
+    @media print {
+      body { padding:0; background:white; font-size:10pt; color:black; }
+      .container { max-width:none; border-radius:0; box-shadow:none; }
+      header { padding:0 0 8px; background:white; color:black; }
+      header a, .eyebrow, header p:last-child, .toolbar, #score, .feedback { display:none; }
+      h1 { font-size:20pt; }
+      .content { padding:0; }
+      .print-details { display:block; }
+      .grid { grid-template-columns:repeat(2, minmax(0, 1fr)); gap:8px; }
+      .question { padding:8px; border:1px solid #999; }
+      .question h3 { margin-bottom:4px; }
+      .equation { margin:6px 0; font-size:14pt; }
+      input { height:30px; width:45px; color:black; border-color:black; }
+      select { display:none; }
+      svg { print-color-adjust:exact; -webkit-print-color-adjust:exact; }
+      .answer-key { break-before:page; border:0; padding:0; }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <header>
+      <a href="index.html">Back to Math Playground</a>
+      <p class="eyebrow">Grade 4 / Fraction detectives</p>
+      <h1>Equivalent Fractions</h1>
+      <p>Different numbers, same amount. Let's discover fractions that are equal!</p>
+    </header>
+    <div class="content">
+      <p class="print-details">Name: ________________________ Date: ______________</p>
+      <section aria-labelledby="practice-title">
+        <h2 id="practice-title">Your turn: 20 fraction challenges</h2>
+        <p class="directions">Use the pictures, fill in the missing numbers, then decide which pairs are equivalent. On paper, write your answers in the boxes or on the lines.</p>
+        <div class="toolbar">
+          <button type="button" id="new-questions">New Questions</button>
+          <button type="button" id="check-answers">Check My Answers</button>
+          <button type="button" id="toggle-key" class="secondary" aria-expanded="false" aria-controls="answer-key">Show Answer Key</button>
+          <button type="button" id="print" class="secondary">Print Worksheet</button>
+        </div>
+        <p id="score" role="status" aria-live="polite"></p>
+        <div class="grid" id="grid"></div>
+      </section>
+      <section class="answer-key" id="answer-key" aria-labelledby="key-title" hidden>
+        <h2 id="key-title">Answer key: how we know</h2>
+        <ol id="key-list"></ol>
+      </section>
+      <noscript>Please enable JavaScript to see the fraction models and practice questions.</noscript>
+    </div>
+  </main>
+  <script>
+    function rand(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function barSvg(numerator, denominator) {
+      const partWidth = 240 / denominator;
+      let parts = '';
+      for (let i = 0; i < denominator; i++) {
+        parts += `<rect x="${10 + i * partWidth}" y="5" width="${partWidth}" height="36" fill="${i < numerator ? '#ffd54f' : '#fff'}" stroke="#183153" stroke-width="1.5"></rect>`;
+      }
+      return `<svg viewBox="0 0 260 46" role="img" aria-label="${numerator} of ${denominator} equal parts shaded in one whole bar">${parts}</svg>`;
+    }
+
+    function fraction(numerator, denominator) {
+      return `<span class="fraction"><span>${numerator}</span><span>${denominator}</span></span>`;
+    }
+
+    let questions = [];
+    const grid = document.getElementById('grid');
+    const score = document.getElementById('score');
+    const answerKey = document.getElementById('answer-key');
+    const toggleKey = document.getElementById('toggle-key');
+
+    function setKeyVisible(visible) {
+      answerKey.hidden = !visible;
+      toggleKey.setAttribute('aria-expanded', String(visible));
+      toggleKey.textContent = visible ? 'Hide Answer Key' : 'Show Answer Key';
+    }
+
+    function generate() {
+      questions = [];
+      for (let i = 0; i < 20; i++) {
+        const denominator = rand(2, 6);
+        const numerator = rand(1, denominator - 1);
+        const multiplier = rand(2, Math.floor(12 / denominator));
+        const targetDenominator = denominator * multiplier;
+        const type = i < 5 ? 'model' : i < 10 ? 'numerator' : i < 15 ? 'denominator' : 'compare';
+        const equivalent = type !== 'compare' || i % 2 === 0;
+        const targetNumerator = numerator * multiplier + (equivalent ? 0 : 1);
+        const answer = type === 'compare' ? (equivalent ? 'yes' : 'no')
+          : type === 'denominator' ? String(targetDenominator) : String(targetNumerator);
+        const explanation = type === 'compare' && !equivalent
+          ? `Not equivalent. Multiplying both numbers in ${numerator}/${denominator} by ${multiplier} gives ${numerator * multiplier}/${targetDenominator}, not ${targetNumerator}/${targetDenominator}.`
+          : `${numerator}/${denominator} = ${targetNumerator}/${targetDenominator}. Multiply both the top and bottom by ${multiplier}.`;
+        questions.push({ type, numerator, denominator, targetNumerator, targetDenominator, answer, explanation });
+      }
+
+      grid.innerHTML = questions.map((q, i) => {
+        const number = i + 1;
+        const prompt = q.type === 'model' ? 'Use the bars. Fill in the top number.'
+          : q.type === 'numerator' ? 'Make an equivalent fraction. Fill in the top.'
+          : q.type === 'denominator' ? 'Make an equivalent fraction. Fill in the bottom.'
+          : 'Are these fractions equivalent?';
+        const input = `<input id="answer-${i}" type="text" inputmode="numeric" autocomplete="off" aria-label="Question ${number}: missing ${q.type === 'denominator' ? 'denominator' : 'numerator'}" aria-describedby="prompt-${i} equation-${i} feedback-${i}" />`;
+        const target = fraction(q.type === 'compare' || q.type === 'denominator' ? q.targetNumerator : input,
+          q.type === 'denominator' ? input : q.targetDenominator);
+        const equationLabel = `${q.numerator} over ${q.denominator} ${q.type === 'compare' ? 'and' : 'equals'} ${q.type === 'compare' || q.type === 'denominator' ? q.targetNumerator : 'a blank numerator'} over ${q.type === 'denominator' ? 'a blank denominator' : q.targetDenominator}`;
+        return `<article class="question">
+          <h3 id="prompt-${i}">${number}. ${prompt}</h3>
+          ${q.type === 'model' ? `<div class="models"><div>${barSvg(q.numerator, q.denominator)}<p>Original whole</p></div><div>${barSvg(q.targetNumerator, q.targetDenominator)}<p>Same-sized whole</p></div></div>` : ''}
+          <span id="equation-${i}" hidden>${equationLabel}</span>
+          <div class="equation">${fraction(q.numerator, q.denominator)}<span>${q.type === 'compare' ? 'and' : '='}</span>${target}</div>
+          ${q.type === 'compare' ? `<select id="answer-${i}" aria-label="Question ${number}: are the fractions equivalent?" aria-describedby="prompt-${i} equation-${i} feedback-${i}"><option value="">Choose an answer</option><option value="yes">Yes, equivalent</option><option value="no">No, not equivalent</option></select><p class="print-details">Equivalent? Yes / No: __________</p>` : ''}
+          <p class="feedback" id="feedback-${i}"></p>
+        </article>`;
+      }).join('');
+      document.getElementById('key-list').innerHTML = questions.map(q =>
+        `<li><strong>${q.type === 'compare' ? (q.answer === 'yes' ? 'Yes' : 'No') : q.answer}.</strong> ${q.explanation}</li>`
+      ).join('');
+      score.textContent = '';
+      setKeyVisible(false);
+    }
+
+    function checkAnswers() {
+      let correct = 0;
+      let unanswered = 0;
+      questions.forEach((q, i) => {
+        const input = document.getElementById(`answer-${i}`);
+        const feedback = document.getElementById(`feedback-${i}`);
+        const value = input.value.trim();
+        const isCorrect = q.type === 'compare' ? value === q.answer : /^\d+$/.test(value) && Number(value) === Number(q.answer);
+        if (!value) unanswered++;
+        if (isCorrect) correct++;
+        input.setAttribute('aria-invalid', String(!isCorrect));
+        feedback.className = `feedback ${isCorrect ? 'correct' : 'retry'}`;
+        feedback.textContent = isCorrect ? 'Correct! Nice fraction thinking.'
+          : !value ? 'Give this one a try!'
+          : q.type === 'compare' ? 'Try again. Do both fractions name the same amount?'
+          : 'Try again. Use the same multiplier for the top and bottom.';
+      });
+      score.textContent = `${correct} of ${questions.length} correct.${unanswered ? ` ${unanswered} still to answer.` : ''} ${correct === questions.length ? 'You are a fraction detective!' : 'Keep going! Multiply the top and bottom by the same number.'}`;
+    }
+
+    grid.addEventListener('input', event => {
+      if (!event.target.matches('input, select')) return;
+      event.target.removeAttribute('aria-invalid');
+      document.getElementById(event.target.getAttribute('aria-describedby').split(' ').pop()).textContent = '';
+      score.textContent = '';
+    });
+    document.getElementById('new-questions').addEventListener('click', generate);
+    document.getElementById('check-answers').addEventListener('click', checkAnswers);
+    toggleKey.addEventListener('click', () => setKeyVisible(answerKey.hidden));
+    document.getElementById('print').addEventListener('click', () => window.print());
+    generate();
+  </script>
+</body>
+</html>

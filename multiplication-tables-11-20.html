@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Multiplication Tables 11-20</title>
+  <style>
+    * { box-sizing:border-box; }
+    body { margin:0; padding:20px; font-family:"Trebuchet MS", Arial, sans-serif; color:#183153; background:#eef7ff; }
+    main { max-width:1100px; margin:auto; padding:24px; background:white; border-radius:20px; }
+    nav a { color:#1d5fa7; }
+    h1 { margin:16px 0 24px; font-size:clamp(1.6rem, 4vw, 2.3rem); }
+    .tables { display:grid; grid-template-columns:repeat(5, minmax(0, 1fr)); gap:16px; }
+    .table { padding:12px; border:2px solid #d6e5f2; border-radius:12px; break-inside:avoid; }
+    h2 { margin:0 0 10px; font-size:1.1rem; color:#1d5fa7; }
+    .question { display:flex; align-items:center; justify-content:space-between; gap:6px; margin:10px 0; white-space:nowrap; }
+    label { font-size:1.05rem; }
+    input { width:52px; min-width:0; height:32px; padding:3px; border:1px solid #1d5fa7; border-radius:4px; font:inherit; text-align:center; }
+    a:focus-visible, input:focus-visible { outline:3px solid #b96900; outline-offset:3px; }
+    @media (max-width:1000px) { .tables { grid-template-columns:repeat(3, minmax(0, 1fr)); } }
+    @media (max-width:650px) { body { padding:0; } main { padding:16px; border-radius:0; } .tables { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+    @media (max-width:400px) { .tables { grid-template-columns:1fr; } }
+    @page { size:portrait; margin:0.4in; }
+    @media print {
+      body { padding:0; color:black; background:white; }
+      main { max-width:none; padding:0; border-radius:0; }
+      nav { display:none; }
+      h1 { margin:0 0 14px; font-size:20pt; }
+      .tables { grid-template-columns:repeat(5, minmax(0, 1fr)); gap:10px; }
+      .table { padding:8px; border:1px solid #999; }
+      h2 { font-size:11pt; color:black; }
+      label { font-size:10pt; }
+      .question { margin:8px 0; gap:3px; }
+      input { width:36px; height:26px; border:0; border-bottom:1px solid black; border-radius:0; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <nav><a href="index.html">Back to Math Playground</a></nav>
+    <h1>Multiplication Tables 11-20</h1>
+    <div class="tables" id="tables"></div>
+    <noscript>Please enable JavaScript to see the multiplication questions.</noscript>
+  </main>
+  <script>
+    const tables = document.getElementById('tables');
+    for (let number = 11; number <= 20; number++) {
+      const table = document.createElement('section');
+      table.className = 'table';
+      table.setAttribute('aria-labelledby', `table-${number}`);
+      let questions = '';
+      for (let multiplier = 1; multiplier <= 10; multiplier++) {
+        const id = `answer-${number}-${multiplier}`;
+        questions += `<div class="question"><label for="${id}">${number} x ${multiplier} =</label><input id="${id}" type="text" inputmode="numeric" autocomplete="off" /></div>`;
+      }
+      table.innerHTML = `<h2 id="table-${number}">${number} times table</h2>${questions}`;
+      tables.appendChild(table);
+    }
+  </script>
+</body>
+</html>
