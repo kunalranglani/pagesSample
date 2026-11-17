@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adding Fractions</title>
+  <style>
+    * { box-sizing:border-box; }
+    body { font-family:Arial, sans-serif; background:#f5f7ff; margin:0; padding:12px; color:#183153; }
+    .container { max-width:920px; margin:auto; background:white; padding:14px; border-radius:16px; }
+    a { color:#1d5fa7; }
+    h1 { margin:12px 0 6px; font-size:1.7rem; }
+    .subtitle { margin:0 0 10px; color:#475569; }
+    .example { padding:10px; background:#eef2ff; border-radius:8px; }
+    button { margin:0 6px 12px 0; padding:10px 12px; border-radius:8px; border:none; background:#4f46e5; color:white; font:inherit; cursor:pointer; }
+    a:focus-visible, button:focus-visible { outline:3px solid #b96900; outline-offset:3px; }
+    .grid { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:10px; }
+    .q { border:1px solid #ddd; padding:12px; border-radius:10px; break-inside:avoid; }
+    .q-title { margin-bottom:10px; font-weight:700; }
+    .equation { display:flex; align-items:center; justify-content:center; gap:10px; font-size:1.4rem; }
+    .fraction { display:inline-flex; flex-direction:column; text-align:center; min-width:28px; vertical-align:middle; }
+    .fraction span { padding:3px; }
+    .fraction span:first-child { border-bottom:2px solid currentColor; }
+    .blank { width:36px; }
+    .blank span { height:32px; }
+    @media screen and (max-width:600px) {
+      .grid { grid-template-columns:repeat(2, minmax(0, 1fr)); }
+      .q { padding:8px; }
+      .equation { gap:6px; font-size:1.2rem; }
+    }
+    @media screen and (max-width:360px) {
+      .grid { grid-template-columns:1fr; }
+    }
+    @page { size:portrait; margin:0.4in; }
+    @media print {
+      body { background:white; padding:0; color:black; }
+      .container { max-width:none; padding:0; border-radius:0; }
+      a, button { display:none; }
+      h1 { margin-top:0; font-size:18pt; }
+      .subtitle, .example { font-size:10pt; }
+      .example { background:white; padding:0; }
+      .grid { gap:6px; }
+      .q { padding:8px; border-color:#bbb; }
+      .q-title { font-size:10pt; margin-bottom:6px; }
+      .equation { font-size:16pt; }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <a href="index.html">Back to Math Playground</a>
+    <h1>Adding Fractions</h1>
+    <p class="subtitle">24 easy questions with same and different denominators. Every answer is one whole or less.</p>
+    <p class="example">Same bottom numbers? Add the top numbers and keep the bottom number: 1/5 + 2/5 = 3/5.<br />
+      Different bottom numbers? Make them match first: 1/2 + 1/4 = 2/4 + 1/4 = 3/4.<br />
+      You do not need to simplify your answers.</p>
+    <button type="button" onclick="generate()">New Questions</button>
+    <button type="button" onclick="window.print()">Print Worksheet</button>
+    <div class="grid" id="grid"></div>
+    <noscript>Please enable JavaScript to see the practice questions.</noscript>
+  </main>
+  <script>
+    function shuffle(items) {
+      for (let i = items.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [items[i], items[j]] = [items[j], items[i]];
+      }
+      return items;
+    }
+
+    function fraction(numerator, denominator) {
+      return `<span class="fraction"><span>${numerator}</span><span>${denominator}</span></span>`;
+    }
+
+    function generate() {
+      const bank = [];
+      for (let denominator = 2; denominator <= 10; denominator++) {
+        for (let first = 1; first <= Math.floor(denominator / 2); first++) {
+          for (let second = first; second <= denominator - first; second++) {
+            bank.push({ first, second, firstDenominator: denominator, secondDenominator: denominator });
+          }
+        }
+      }
+
+      const differentBank = [];
+      const denominatorPairs = [[2, 4], [2, 6], [2, 8], [2, 10], [3, 6], [3, 9], [4, 8], [5, 10]];
+      denominatorPairs.forEach(function (pair) {
+        const [firstDenominator, secondDenominator] = pair;
+        for (let first = 1; first < firstDenominator; first++) {
+          for (let second = 1; second < secondDenominator; second++) {
+            if (first * secondDenominator + second * firstDenominator <= firstDenominator * secondDenominator) {
+              differentBank.push({ first, second, firstDenominator, secondDenominator });
+            }
+          }
+        }
+      });
+      const problems = shuffle(shuffle(bank).slice(0, 16).concat(shuffle(differentBank).slice(0, 8)));
+
+      document.getElementById('grid').innerHTML = problems.map(function (problem, index) {
+        return `
+          <div class="q">
+            <div class="q-title">${index + 1}. Add</div>
+            <div class="equation" role="img" aria-label="${problem.first} over ${problem.firstDenominator} plus ${problem.second} over ${problem.secondDenominator} equals a blank fraction">
+              ${fraction(problem.first, problem.firstDenominator)}
+              <span>+</span>
+              ${fraction(problem.second, problem.secondDenominator)}
+              <span>=</span>
+              <span class="fraction blank"><span></span><span></span></span>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    generate();
+  </script>
+</body>
+</html>
